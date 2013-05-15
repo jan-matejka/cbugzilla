@@ -1,3 +1,3 @@
 build:
 
-	gcc -lcurl cgb.c -o cgb
+	gcc -ggdb -lcurl cgb.c -o cgb
