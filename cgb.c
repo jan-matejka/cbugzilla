@@ -124,14 +124,25 @@ void dumpNode(TidyDoc doc, TidyNode body )
 {
   TidyNode ch1, ch2;
   ctmbstr s;
+  TidyAttr tattr;
 
   ch1 = tidyGetChild(body);
 
+  /* path where the saved query links are:
+   *  html body div#footer ul#useful-links li#links-saved ul.links
+   *
+   * in there here's a single link:
+   *  li a
+   */
+
   while(1) {
     ch2 = tidyGetNext(ch1);
-    if(TidyTag_DIV == tidyNodeGetId(ch2))
-      printf("it's a div!");
-      break;
+    if(TidyTag_DIV == tidyNodeGetId(ch2)) {
+      tattr = tidyAttrGetById(ch2, TidyAttr_ID);
+      printf("id=%s\n", tidyAttrValue(tattr));
+    }
+
+    ch1 = ch2;
   }
 }
 
@@ -186,6 +197,7 @@ int main(void)
   tdoc = tidyCreate();
   int err;
   TidyBuffer *buf;
+  buf = malloc(8); // Why the hell does tidyBufInit assert buf != 0 ?
   tidyBufInit(buf);
   tidyBufAppend(buf, (void *) chunk.memory, (uint) chunk.size);
   err = tidyParseBuffer(tdoc, buf);
