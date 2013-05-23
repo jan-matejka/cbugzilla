@@ -8,6 +8,8 @@
 #define SKIP_PEER_VERIFICATION 1
 #define SKIP_HOSTNAME_VERIFICATION 1
 
+#define BO(...) if(EXIT_FAILURE == __VA_ARGS__) return EXIT_FAILURE;
+
 char *url_login = "https://bugs.gentoo.org/index.cgi";
 char *url_search_list = "https://bugs.gentoo.org/";
 char *auth_file = "./auth";
@@ -40,6 +42,13 @@ int CGBString_realloc(CGBString_t *cgbs, int len) {
   cgbs->mem[len] = 0;
 }
 
+void CGBString_free(CGBString_t *s) {
+  s->len = 0;
+  s->size = 0;
+  if(s->mem != NULL)
+    free(s->mem);
+  s->mem = NULL;
+}
 // }}}
 
 
@@ -62,8 +71,7 @@ CGB_t *CGB_new(void) {
 }
 
 int CGB_init(CGB_t *cgb) {
-  if(CGB_init_curl(cgb))
-    return EXIT_FAILURE;
+  BO(CGB_init_curl(cgb))
 
   cgb->devnull = fopen("/dev/null", "w");
 
@@ -74,10 +82,11 @@ int CGB_init(CGB_t *cgb) {
 
   char hostname[] = "https://bugs.gentoo.org";
   int hostlen = strlen(hostname);
-  CGBString_realloc(&cgb->hostname, hostlen);
+  BO(CGBString_realloc(&cgb->hostname, hostlen))
   strncpy(cgb->hostname.mem, hostname, hostlen);
 
-  CGB_authRead(cgb);
+  BO(CGB_authRead(cgb))
+  return EXIT_SUCCESS;
 }
 
 size_t
@@ -120,6 +129,7 @@ int CGB_init_curl(CGB_t *cgb) {
 }
 
 int CGB_curl_perform(CGB_t *cgb) {
+  CGBString_free(&cgb->response);
   cgb->res = curl_easy_perform(cgb->curl);
   if(cgb->res != CURLE_OK) {
     fprintf(stderr, "curl_easy_perform() failed: %s\n",
@@ -155,8 +165,7 @@ int CGB_bz_login(CGB_t * cgb)
                CURLFORM_END);
 
   curl_easy_setopt(cgb->curl, CURLOPT_HTTPPOST, formpost);
-  if(EXIT_FAILURE == CGB_curl_perform(cgb))
-    return EXIT_FAILURE;
+  BO(CGB_curl_perform(cgb))
 
   curl_formfree(formpost);
 
@@ -173,15 +182,15 @@ int CGB_authRead(CGB_t * cgb)
   fread(&buf, sizeof(char), 256, fp);
 
   tok = strtok(buf, "\n");
-  CGBString_realloc(&cgb->auth_user, strlen(tok));
+  BO(CGBString_realloc(&cgb->auth_user, strlen(tok)))
   strcpy(cgb->auth_user.mem, tok);
 
   tok = strtok(NULL, "\n");
-  CGBString_realloc(&cgb->auth_pass, strlen(tok));
+  BO(CGBString_realloc(&cgb->auth_pass, strlen(tok)))
   strcpy(cgb->auth_pass.mem, tok);
 
   if(cgb->auth_user.size == 0 || cgb->auth_pass.size == 0) {
-    printf("couldn't parse auth\n");
+    fprintf(stderr, "couldn't parse auth\n");
     exit(EXIT_FAILURE);
   }
 }
@@ -261,8 +270,7 @@ void CGB_SavedQueries_parse(TidyDoc doc, TidyNode body )
 int CGB_SavedQueries_get(CGB_t *cgb) {
   curl_easy_setopt(cgb->curl, CURLOPT_URL, url_search_list);
 
-  if(EXIT_FAILURE == CGB_curl_perform(cgb))
-    return EXIT_FAILURE;
+  BO(CGB_curl_perform(cgb))
 
   TidyDoc tdoc;
 
@@ -282,9 +290,8 @@ int CGB_SavedQueries_get(CGB_t *cgb) {
 int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count) {
   char *url=NULL;
   int len;
-  CURLcode res;
   len = strlen(url_namedcmd) -2 + strlen(namedcmd) +1;
-  url = realloc(&url, sizeof(char) * len);
+  url = realloc(url, sizeof(char) * len);
   snprintf(url, len, url_namedcmd, namedcmd);
 
   curl_easy_setopt(cgb->curl, CURLOPT_URL, url);
@@ -295,9 +302,13 @@ int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count) {
   return EXIT_SUCCESS;
 }
 
-void CGB_log_response(CGB_t *cgb, char *name) {
+int CGB_log_response(CGB_t *cgb, char *name) {
   if(cgb->log_response == NULL) {
     cgb->log_response = fopen("./response.log", "a");
+    if(cgb->log_response == NULL) {
+      perror("fopen");
+      return EXIT_FAILURE;
+    }
   }
 
   fprintf(cgb->log_response, "NEW %s:\n", name);
@@ -310,10 +321,15 @@ int main(void)
   CGB_t *cgb;
 
   cgb = CGB_new();
-  CGB_init(cgb);
+  BO(CGB_init(cgb))
 
-  CGB_bz_login(cgb);
+  BO(CGB_bz_login(cgb))
   CGB_log_response(cgb, "bz_login");
+
+  int records;
+  BO(CGB_bz_RecordsCount_get(cgb, "python-herd", &records))
+
+  CGB_log_response(cgb, "rec: python-herd");
 
   CGB_cleanup(cgb);
   return EXIT_SUCCESS;
