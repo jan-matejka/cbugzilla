@@ -119,6 +119,16 @@ int CGB_init_curl(CGB_t *cgb) {
   return EXIT_SUCCESS;
 }
 
+int CGB_curl_perform(CGB_t *cgb) {
+  cgb->res = curl_easy_perform(cgb->curl);
+  if(cgb->res != CURLE_OK) {
+    fprintf(stderr, "curl_easy_perform() failed: %s\n",
+            curl_easy_strerror(cgb->res));
+    return EXIT_FAILURE;
+  }
+  return EXIT_SUCCESS;
+}
+
 int CGB_cleanup(CGB_t *cgb) {
   curl_easy_cleanup(cgb->curl);
   curl_global_cleanup();
@@ -145,14 +155,12 @@ int CGB_bz_login(CGB_t * cgb)
                CURLFORM_END);
 
   curl_easy_setopt(cgb->curl, CURLOPT_HTTPPOST, formpost);
+  if(EXIT_FAILURE == CGB_curl_perform(cgb))
+    return EXIT_FAILURE;
 
-  cgb->res = curl_easy_perform(cgb->curl);
-  if(cgb->res != CURLE_OK)
-    fprintf(stderr, "curl_easy_perform() failed: %s\n",
-            curl_easy_strerror(cgb->res));
   curl_formfree(formpost);
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 int CGB_authRead(CGB_t * cgb)
@@ -253,11 +261,8 @@ void CGB_SavedQueries_parse(TidyDoc doc, TidyNode body )
 int CGB_SavedQueries_get(CGB_t *cgb) {
   curl_easy_setopt(cgb->curl, CURLOPT_URL, url_search_list);
 
-  cgb->res = curl_easy_perform(cgb->curl);
-
-  if(cgb->res != CURLE_OK)
-    fprintf(stderr, "curl_easy_perform() failed: %s\n",
-            curl_easy_strerror(cgb->res));
+  if(EXIT_FAILURE == CGB_curl_perform(cgb))
+    return EXIT_FAILURE;
 
   TidyDoc tdoc;
 
@@ -269,7 +274,7 @@ int CGB_SavedQueries_get(CGB_t *cgb) {
   tidyBufAppend(buf, (void *) cgb->response.mem, (uint) cgb->response.size);
   err = tidyParseBuffer(tdoc, buf);
   if(err < 0)
-      return 1;
+      return EXIT_FAILURE;
 
   CGB_SavedQueries_parse( tdoc, tidyGetBody(tdoc) );
 }
@@ -283,13 +288,11 @@ int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count) {
   snprintf(url, len, url_namedcmd, namedcmd);
 
   curl_easy_setopt(cgb->curl, CURLOPT_URL, url);
-  cgb->res = curl_easy_perform(cgb->curl);
-  if(cgb->res != CURLE_OK)
-    fprintf(stderr, "curl_easy_perform() failed: %s\n",
-            curl_easy_strerror(cgb->res));
-    return -1;
 
-  return 0;
+  if(EXIT_FAILURE == CGB_curl_perform(cgb))
+    return EXIT_FAILURE;
+
+  return EXIT_SUCCESS;
 }
 
 void CGB_log_response(CGB_t *cgb, char *name) {
