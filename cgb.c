@@ -7,7 +7,7 @@
 
 #define SKIP_PEER_VERIFICATION 1
 #define SKIP_HOSTNAME_VERIFICATION 1
-#define VERBOSE 1
+#define VERBOSE 0
 
 #define BO(...) if(EXIT_FAILURE == __VA_ARGS__) return EXIT_FAILURE;
 
@@ -303,6 +303,7 @@ int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count) {
   strcat(url, query);
 
   curl_easy_setopt(cgb->curl, CURLOPT_URL, url);
+  curl_easy_setopt(cgb->curl, CURLOPT_HTTPGET, 1L);
 
   if(EXIT_FAILURE == CGB_curl_perform(cgb))
     return EXIT_FAILURE;
