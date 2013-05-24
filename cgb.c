@@ -32,15 +32,19 @@ int CGBString_init(CGBString_t cgbs) {
 }
 
 
-int CGBString_realloc(CGBString_t *cgbs, int len) {
-  cgbs->len  = len+1;
-  cgbs->size = sizeof(char) * (cgbs->len);
-  cgbs->mem = realloc(cgbs->mem, cgbs->size);
-  if(cgbs->mem == NULL) {
+int CGBString_realloc(CGBString_t *s, int len) {
+  int oldlen = s->len;
+  s->len = len;
+  if(oldlen == 0)
+    s->len += 1; // count the NULL byte only firt time
+  s->size = sizeof(char) * (s->len);
+  s->mem = realloc(s->mem, s->size);
+  if(s->mem == NULL) {
     perror("realloc");
     return EXIT_FAILURE;
   }
-  cgbs->mem[len] = 0;
+  if(oldlen == 0)
+    memset(s->mem, 0, s->size);
 }
 
 void CGBString_free(CGBString_t *s) {
@@ -106,6 +110,7 @@ CGB_curl_WMemCallback(void *ptr, size_t size, size_t nmemb, void *data)
   if(size != sizeof(char)) {
     fprintf(stderr, "unexpected size");
     return EXIT_FAILURE;
+    // FIXME: this probabl won't work
   }
 
   CGBString_realloc(cgbs, cgbs->len + nmemb);
