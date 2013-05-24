@@ -64,6 +64,7 @@ struct CGB_s {
   FILE *devnull, *log_response;
   CGBString_t auth_user;
   CGBString_t auth_pass;
+  CGBString_t cookiejar;
 };
 
 CGB_t *CGB_new(void) {
@@ -72,6 +73,11 @@ CGB_t *CGB_new(void) {
 }
 
 int CGB_init(CGB_t *cgb) {
+  char cookiejar[] = "./cookiejar";
+  int jarlen = strlen(cookiejar);
+  BO(CGBString_realloc(&cgb->cookiejar, jarlen))
+  strncpy(cgb->cookiejar.mem, cookiejar, jarlen);
+
   BO(CGB_init_curl(cgb))
 
   cgb->devnull = fopen("/dev/null", "w");
@@ -110,7 +116,6 @@ CGB_curl_WMemCallback(void *ptr, size_t size, size_t nmemb, void *data)
 }
 
 int CGB_init_curl(CGB_t *cgb) {
-  //char *cookiejar = strcat(getenv("HOME"), "/gb_cookiejar");
   curl_global_init(CURL_GLOBAL_SSL);
 
   cgb->curl = curl_easy_init();
@@ -121,8 +126,10 @@ int CGB_init_curl(CGB_t *cgb) {
   curl_easy_setopt(cgb->curl, CURLOPT_SSL_VERIFYHOST, SKIP_HOSTNAME_VERIFICATION);
 
   curl_easy_setopt(cgb->curl, CURLOPT_VERBOSE, VERBOSE);
-  // curl_easy_setopt(cgb->curl, CURLOPT_COOKIEJAR, cookiejar);
+  curl_easy_setopt(cgb->curl, CURLOPT_COOKIEJAR, cgb->cookiejar.mem);
+  // NOTE: setting just COOKIESESSION to 1 won't send the cookies in the next request :/
   //curl_easy_setopt(cgb->curl, CURLOPT_HEADER, 1);
+  //curl_easy_setopt(cgb->curl, CURLOPT_COOKIESESSION, 1);
 
   curl_easy_setopt(cgb->curl, CURLOPT_WRITEFUNCTION, CGB_curl_WMemCallback);
   curl_easy_setopt(cgb->curl, CURLOPT_WRITEDATA, (void *)&cgb->response);
@@ -304,6 +311,9 @@ int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count) {
 
   curl_easy_setopt(cgb->curl, CURLOPT_URL, url);
   curl_easy_setopt(cgb->curl, CURLOPT_HTTPGET, 1L);
+  curl_easy_setopt(cgb->curl, CURLOPT_FOLLOWLOCATION, 1);
+  // BZ will respond with 302 to <oururl>&list_id=X
+  // so follow it
 
   if(EXIT_FAILURE == CGB_curl_perform(cgb))
     return EXIT_FAILURE;
