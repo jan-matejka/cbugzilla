@@ -100,7 +100,6 @@ size_t
 CGB_curl_WMemCallback(void *ptr, size_t size, size_t nmemb, void *data)
 {
   size_t realsize = size * nmemb;
-  size_t oldsize;
 
   CGBString_t *cgbs = (CGBString_t *)data;
   CGBString_init(*cgbs);
@@ -108,10 +107,10 @@ CGB_curl_WMemCallback(void *ptr, size_t size, size_t nmemb, void *data)
     fprintf(stderr, "unexpected size");
     return EXIT_FAILURE;
   }
-  oldsize = cgbs->size;
+
   CGBString_realloc(cgbs, cgbs->len + nmemb);
 
-  memcpy(&(cgbs->mem[oldsize]), ptr, realsize);
+  strncat(cgbs->mem, ptr, realsize);
   return realsize;
 }
 
