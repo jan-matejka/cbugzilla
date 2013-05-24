@@ -7,13 +7,14 @@
 
 #define SKIP_PEER_VERIFICATION 1
 #define SKIP_HOSTNAME_VERIFICATION 1
+#define VERBOSE 1
 
 #define BO(...) if(EXIT_FAILURE == __VA_ARGS__) return EXIT_FAILURE;
 
-char *url_login = "https://bugs.gentoo.org/index.cgi";
-char *url_search_list = "https://bugs.gentoo.org/";
+char *url_login = "/index.cgi";
+char *url_search_list = "/";
 char *auth_file = "./auth";
-char *url_namedcmd = "https://bugs.gentoo.org/buglist.cgi?cmdtype=runnamed&namedcmd=%s";
+char *url_namedcmd = "/buglist.cgi?cmdtype=runnamed&namedcmd=%s";
 
 // {{{ CGBString
 struct CBGString_s;
@@ -119,7 +120,7 @@ int CGB_init_curl(CGB_t *cgb) {
   curl_easy_setopt(cgb->curl, CURLOPT_SSL_VERIFYPEER, SKIP_PEER_VERIFICATION);
   curl_easy_setopt(cgb->curl, CURLOPT_SSL_VERIFYHOST, SKIP_HOSTNAME_VERIFICATION);
 
-  curl_easy_setopt(cgb->curl, CURLOPT_VERBOSE, 0);
+  curl_easy_setopt(cgb->curl, CURLOPT_VERBOSE, VERBOSE);
   // curl_easy_setopt(cgb->curl, CURLOPT_COOKIEJAR, cookiejar);
   //curl_easy_setopt(cgb->curl, CURLOPT_HEADER, 1);
 
@@ -150,7 +151,13 @@ int CGB_bz_login(CGB_t * cgb)
   struct curl_httppost *lastptr=NULL;
   struct curl_slist *headerlist=NULL;
 
-  curl_easy_setopt(cgb->curl, CURLOPT_URL, url_login);
+  char *url=strdup(cgb->hostname.mem);
+  int len;
+  len = (cgb->hostname.len + strlen(url_login) + 1);
+  url = realloc(url, sizeof(char) * len);
+  strcat(url, url_login);
+
+  curl_easy_setopt(cgb->curl, CURLOPT_URL, url);
 
   curl_formadd(&formpost,
                &lastptr,
@@ -288,11 +295,12 @@ int CGB_SavedQueries_get(CGB_t *cgb) {
 }
 
 int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count) {
-  char *url=NULL;
-  int len;
-  len = strlen(url_namedcmd) -2 + strlen(namedcmd) +1;
-  url = realloc(url, sizeof(char) * len);
-  snprintf(url, len, url_namedcmd, namedcmd);
+  char *url = strdup(cgb->hostname.mem);
+  int len = strlen(url_namedcmd) -2 + strlen(namedcmd) +1;
+  char query[len];
+  snprintf(query, len, url_namedcmd, namedcmd);
+  url = realloc(url, sizeof(char)*(cgb->hostname.len + strlen(query)));
+  strcat(url, query);
 
   curl_easy_setopt(cgb->curl, CURLOPT_URL, url);
 
