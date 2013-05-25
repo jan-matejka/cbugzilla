@@ -359,27 +359,25 @@ int CGB_parse_recordsCount(TidyDoc doc, TidyNode body, int *count) {
   while(1) {
     switch(step) {
       case 0:
-        ch2 = tidyGetNext(ch1);
-        tattr = tidyAttrGetById(ch2, TidyAttr_ID);
+        tattr = tidyAttrGetById(ch1, TidyAttr_ID);
         if(NULL == (s = tidyAttrValue(tattr)))
-          { ch1 = ch2; continue; }
+          { goto _next; }
         if(0 != strcmp("bugzilla-body", s))
-          { ch1 = ch2; continue; }
+          { goto _next; }
 
-        ch1 = tidyGetChild(ch2);
+        ch1 = tidyGetChild(ch1);
         step++;
       break;
       case 1:
-        ch2 = tidyGetNext(ch1);
         if(TidyTag_SPAN != tidyNodeGetId(ch1))
-          { ch1 = ch2; continue; }
+          { goto _next; }
 
-        tattr = tidyAttrGetById(ch2, TidyAttr_CLASS);
+        tattr = tidyAttrGetById(ch1, TidyAttr_CLASS);
         if(NULL == (s = tidyAttrValue(tattr)))
-          { ch1 = ch2; continue; }
+          { goto _next; }
 
         if(0 != strcmp("bz_result_count", s))
-          { ch1 = ch2; continue; }
+          { goto _next; }
 
         *count = 666;
         return EXIT_SUCCESS;
@@ -389,6 +387,10 @@ int CGB_parse_recordsCount(TidyDoc doc, TidyNode body, int *count) {
         fprintf(stderr, "DOM traversal failed\n");
         return EXIT_FAILURE;
     }
+
+    _next:
+      ch2 = tidyGetNext(ch1);
+      ch1 = ch2;
   }
 }
 
