@@ -311,9 +311,6 @@ int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count) {
    * (with custom writefunction callback)
    * and _maybe_ save some resources but probably not.
    */
-  /* TODO: the number is value of path:
-   *  body div#bugzilla-body ul.search_description span.bz_result_count
-   */
   char *url = strdup(cgb->hostname.mem);
   int len = strlen(url_namedcmd) -2 + strlen(namedcmd) +1;
   char query[len];
@@ -330,7 +327,69 @@ int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count) {
   if(EXIT_FAILURE == CGB_curl_perform(cgb))
     return EXIT_FAILURE;
 
+
+  TidyDoc tdoc;
+
+  tdoc = tidyCreate();
+  int err;
+  TidyBuffer *buf;
+  buf = malloc(8); // Why the hell does tidyBufInit assert buf != 0 ?
+  tidyBufInit(buf);
+  tidyBufAppend(buf, (void *) cgb->response.mem, (uint) cgb->response.size);
+  err = tidyParseBuffer(tdoc, buf);
+  if(err < 0)
+      return EXIT_FAILURE;
+
+  BO(CGB_parse_recordsCount(tdoc, tidyGetBody(tdoc), count))
+
   return EXIT_SUCCESS;
+}
+
+int CGB_parse_recordsCount(TidyDoc doc, TidyNode body, int *count) {
+  /* TODO: the number is value of path:
+   *  body div#bugzilla-body span.bz_result_count
+   */
+  TidyNode ch1, ch2;
+  ctmbstr s;
+  TidyAttr tattr;
+  int step=0;
+
+  ch1 = tidyGetChild(body);
+
+  while(1) {
+    switch(step) {
+      case 0:
+        ch2 = tidyGetNext(ch1);
+        tattr = tidyAttrGetById(ch2, TidyAttr_ID);
+        if(NULL == (s = tidyAttrValue(tattr)))
+          { ch1 = ch2; continue; }
+        if(0 != strcmp("bugzilla-body", s))
+          { ch1 = ch2; continue; }
+
+        ch1 = tidyGetChild(ch2);
+        step++;
+      break;
+      case 1:
+        ch2 = tidyGetNext(ch1);
+        if(TidyTag_SPAN != tidyNodeGetId(ch1))
+          { ch1 = ch2; continue; }
+
+        tattr = tidyAttrGetById(ch2, TidyAttr_CLASS);
+        if(NULL == (s = tidyAttrValue(tattr)))
+          { ch1 = ch2; continue; }
+
+        if(0 != strcmp("bz_result_count", s))
+          { ch1 = ch2; continue; }
+
+        *count = 666;
+        return EXIT_SUCCESS;
+        break;
+
+      default:
+        fprintf(stderr, "DOM traversal failed\n");
+        return EXIT_FAILURE;
+    }
+  }
 }
 
 int CGB_log_response(CGB_t *cgb, char *name) {
@@ -359,8 +418,9 @@ int main(void)
 
   int records;
   BO(CGB_bz_RecordsCount_get(cgb, "python-herd", &records))
-
   CGB_log_response(cgb, "rec: python-herd");
+
+  printf("Records for python-herd: %d\n", records);
 
   CGB_cleanup(cgb);
   return EXIT_SUCCESS;
