@@ -9,9 +9,9 @@ int CGB_bz_login(CGB_t * cgb)
 	struct curl_httppost *lastptr=NULL;
 	struct curl_slist *headerlist=NULL;
 
-	char *url=strdup(cgb->hostname.mem);
+	char *url=strdup(cgb->url.mem);
 	int len;
-	len = (cgb->hostname.len + strlen(url_login) + 1);
+	len = (cgb->url.len + strlen(url_login) + 1);
 	url = realloc(url, sizeof(char) * len);
 	strcat(url, url_login);
 
@@ -43,11 +43,11 @@ int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count) {
 	 * (with custom writefunction callback)
 	 * and _maybe_ save some resources but probably not.
 	 */
-	char *url = strdup(cgb->hostname.mem);
+	char *url = strdup(cgb->url.mem);
 	int len = strlen(url_namedcmd) -2 + strlen(namedcmd) +1;
 	char query[len];
 	snprintf(query, len, url_namedcmd, namedcmd);
-	url = realloc(url, sizeof(char)*(cgb->hostname.len + strlen(query)));
+	url = realloc(url, sizeof(char)*(cgb->url.len + strlen(query)));
 	strcat(url, query);
 
 	curl_easy_setopt(cgb->curl, CURLOPT_URL, url);

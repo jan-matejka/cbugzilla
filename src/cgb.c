@@ -12,7 +12,7 @@ typedef struct CGB_s CGB_t;
 struct CGB_s {
   CURL *curl;
   CURLcode res;
-  CGBString_t hostname;
+  CGBString_t url;
   CGBString_t response;
   FILE *devnull, *log_response;
   CGBString_t auth_user;
@@ -40,14 +40,14 @@ int CGB_init(CGB_t *cgb) {
   cgb->verify_host = 1;
 
   CGBString_init(cgb->response);
-  CGBString_init(cgb->hostname);
+  CGBString_init(cgb->url);
   CGBString_init(cgb->auth_user);
   CGBString_init(cgb->auth_pass);
 
   char hostname[] = "https://bugs.gentoo.org";
   int hostlen = strlen(hostname);
-  BO(CGBString_realloc(&cgb->hostname, hostlen))
-  strncpy(cgb->hostname.mem, hostname, hostlen);
+  BO(CGBString_realloc(&cgb->url, hostlen))
+  strncpy(cgb->url.mem, hostname, hostlen);
 
   BO(CGB_authRead(cgb))
   return EXIT_SUCCESS;
