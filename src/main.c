@@ -1,4 +1,4 @@
-#include "cgb.c"
+#include "bugzilla.c"
 
 int main(void)
 {

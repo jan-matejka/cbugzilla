@@ -1,4 +1,4 @@
-#include "../src/cgb.c"
+#include "../src/bugzilla.c"
 
 #include <sys/mman.h>
 #include <sys/stat.h>
