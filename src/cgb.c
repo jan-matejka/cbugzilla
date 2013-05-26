@@ -285,22 +285,34 @@ void CGB_SavedQueries_parse(TidyDoc doc, TidyNode body )
   }
 }
 
+TidyDoc CGB_tdoc_init(TidyDoc d) {
+  d = tidyCreate();
+
+  tidyOptSetBool( d, TidyQuiet, yes );
+  tidyOptSetBool( d, TidyShowWarnings, no );
+  return d;
+}
+
+int CGB_tidy_loadBuf(TidyDoc *d, void *buf, size_t buflen) {
+  int err;
+
+  *d = CGB_tdoc_init(*d);
+  TidyBuffer _buf;
+  tidyBufInit(&_buf);
+  tidyBufAppend(&_buf, buf, buflen);
+  err = tidyParseBuffer(*d, &_buf);
+  if(err < 0)
+    return EXIT_FAILURE;
+  return EXIT_SUCCESS;
+}
+
 int CGB_SavedQueries_get(CGB_t *cgb) {
   curl_easy_setopt(cgb->curl, CURLOPT_URL, url_search_list);
 
   BO(CGB_curl_perform(cgb))
 
   TidyDoc tdoc;
-
-  tdoc = tidyCreate();
-  int err;
-  TidyBuffer *buf;
-  buf = malloc(8); // Why the hell does tidyBufInit assert buf != 0 ?
-  tidyBufInit(buf);
-  tidyBufAppend(buf, (void *) cgb->response.mem, (uint) cgb->response.size);
-  err = tidyParseBuffer(tdoc, buf);
-  if(err < 0)
-      return EXIT_FAILURE;
+  BO(CGB_tidy_loadBuf(&tdoc, cgb->response.mem, cgb->response.size ))
 
   CGB_SavedQueries_parse( tdoc, tidyGetBody(tdoc) );
 }
@@ -329,16 +341,7 @@ int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count) {
 
 
   TidyDoc tdoc;
-
-  tdoc = tidyCreate();
-  int err;
-  TidyBuffer *buf;
-  buf = malloc(8); // Why the hell does tidyBufInit assert buf != 0 ?
-  tidyBufInit(buf);
-  tidyBufAppend(buf, (void *) cgb->response.mem, (uint) cgb->response.size);
-  err = tidyParseBuffer(tdoc, buf);
-  if(err < 0)
-      return EXIT_FAILURE;
+  BO(CGB_tidy_loadBuf(&tdoc, cgb->response.mem, cgb->response.size))
 
   BO(CGB_parse_recordsCount(tdoc, tidyGetBody(tdoc), count))
 
@@ -406,26 +409,6 @@ int CGB_log_response(CGB_t *cgb, char *name) {
   fprintf(cgb->log_response, "NEW %s:\n", name);
   fwrite(cgb->response.mem, cgb->response.len-1, sizeof(char), cgb->log_response);
   fprintf(cgb->log_response, "\n\n");
-}
-
-int main(void)
-{
-  CGB_t *cgb;
-
-  cgb = CGB_new();
-  BO(CGB_init(cgb))
-
-  BO(CGB_bz_login(cgb))
-  CGB_log_response(cgb, "bz_login");
-
-  int records;
-  BO(CGB_bz_RecordsCount_get(cgb, "python-herd", &records))
-  CGB_log_response(cgb, "rec: python-herd");
-
-  printf("Records for python-herd: %d\n", records);
-
-  CGB_cleanup(cgb);
-  return EXIT_SUCCESS;
 }
 
 /* vim: set sw=2 sts=2 et fdm=marker : */
