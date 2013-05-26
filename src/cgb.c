@@ -14,7 +14,7 @@ struct CGB_s {
   CURLcode res;
   CGBString_t url;
   CGBString_t response;
-  FILE *devnull, *log_response;
+  FILE *log_response;
   CGBString_t auth_user;
   CGBString_t auth_pass;
   CGBString_t cookiejar;
@@ -28,7 +28,6 @@ CGB_t *CGB_new(void) {
 }
 
 int CGB_init(CGB_t *cgb) {
-  cgb->devnull = fopen("/dev/null", "w");
   cgb->verify_peer = 1;
   cgb->verify_host = 1;
 
