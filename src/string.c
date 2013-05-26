@@ -37,3 +37,13 @@ void CGBString_free(CGBString_t *s) {
 		free(s->mem);
 	s->mem = NULL;
 }
+
+int CGBString_dup(CGBString_t *s, char *cs) {
+	CGBString_free(s);
+	s->mem = strdup(cs);
+	if(s->mem == NULL)
+		{ perror("strdup"); return EXIT_FAILURE; }
+	s->len = strlen(cs);
+	s->size = s->len * sizeof(char);
+	return EXIT_SUCCESS;
+}

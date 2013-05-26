@@ -28,13 +28,6 @@ CGB_t *CGB_new(void) {
 }
 
 int CGB_init(CGB_t *cgb) {
-  char cookiejar[] = "./cookiejar";
-  int jarlen = strlen(cookiejar);
-  BO(CGBString_realloc(&cgb->cookiejar, jarlen))
-  strncpy(cgb->cookiejar.mem, cookiejar, jarlen);
-
-  BO(CGB_init_curl(cgb))
-
   cgb->devnull = fopen("/dev/null", "w");
   cgb->verify_peer = 1;
   cgb->verify_host = 1;
@@ -43,11 +36,6 @@ int CGB_init(CGB_t *cgb) {
   CGBString_init(cgb->url);
   CGBString_init(cgb->auth_user);
   CGBString_init(cgb->auth_pass);
-
-  char hostname[] = "https://bugs.gentoo.org";
-  int hostlen = strlen(hostname);
-  BO(CGBString_realloc(&cgb->url, hostlen))
-  strncpy(cgb->url.mem, hostname, hostlen);
 
   BO(CGB_authRead(cgb))
   return EXIT_SUCCESS;
