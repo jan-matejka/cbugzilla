@@ -49,8 +49,11 @@ int CGB_parse_recordsCount(TidyDoc doc, TidyNode body, int *count) {
 	 */
 	TidyNode ch1, ch2;
 	ctmbstr s;
+	TidyBuffer buf;
+	tidyBufInit(&buf);
 	TidyAttr tattr;
 	int step=0;
+	char *x,*y;
 
 	ch1 = tidyGetChild(body);
 
@@ -77,7 +80,18 @@ int CGB_parse_recordsCount(TidyDoc doc, TidyNode body, int *count) {
 				if(0 != strcmp("bz_result_count", s))
 					{ goto _next; }
 
-				*count = 666;
+				tidyNodeGetText(doc, ch1, &buf);
+				// FIXME: get only the node content
+				// I tried using tidyNodeGetValue instead but got only NULL. I don't get how to do this.
+				x = strchr(buf.bp, '>');
+				if(NULL == x)
+					{ goto _next; }
+				y = strdup(x+1);
+				x = strchr(y, ' ');
+				*x = 0;
+				*count = atoi(y);
+				free(y);
+
 				return EXIT_SUCCESS;
 				break;
 
