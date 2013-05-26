@@ -1,5 +1,3 @@
-#define SKIP_PEER_VERIFICATION 1
-#define SKIP_HOSTNAME_VERIFICATION 1
 #define VERBOSE 0
 
 #define BO(...) if(EXIT_FAILURE == __VA_ARGS__) return EXIT_FAILURE;
@@ -20,6 +18,8 @@ struct CGB_s {
   CGBString_t auth_user;
   CGBString_t auth_pass;
   CGBString_t cookiejar;
+  int verify_peer;
+  int verify_host;
 };
 
 CGB_t *CGB_new(void) {
@@ -36,6 +36,8 @@ int CGB_init(CGB_t *cgb) {
   BO(CGB_init_curl(cgb))
 
   cgb->devnull = fopen("/dev/null", "w");
+  cgb->verify_peer = 1;
+  cgb->verify_host = 1;
 
   CGBString_init(cgb->response);
   CGBString_init(cgb->hostname);

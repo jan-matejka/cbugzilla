@@ -28,13 +28,12 @@ int CGB_init_curl(CGB_t *cgb) {
 	if(!cgb->curl)
 		return EXIT_FAILURE;
 
-	curl_easy_setopt(cgb->curl, CURLOPT_SSL_VERIFYPEER, SKIP_PEER_VERIFICATION);
-	curl_easy_setopt(cgb->curl, CURLOPT_SSL_VERIFYHOST, SKIP_HOSTNAME_VERIFICATION);
+	curl_easy_setopt(cgb->curl, CURLOPT_SSL_VERIFYPEER, cgb->verify_peer);
+	curl_easy_setopt(cgb->curl, CURLOPT_SSL_VERIFYHOST, cgb->verify_host);
 
 	curl_easy_setopt(cgb->curl, CURLOPT_VERBOSE, VERBOSE);
 	curl_easy_setopt(cgb->curl, CURLOPT_COOKIEJAR, cgb->cookiejar.mem);
 	// NOTE: setting just COOKIESESSION to 1 won't send the cookies in the next request :/
-	//curl_easy_setopt(cgb->curl, CURLOPT_HEADER, 1);
 	//curl_easy_setopt(cgb->curl, CURLOPT_COOKIESESSION, 1);
 
 	curl_easy_setopt(cgb->curl, CURLOPT_WRITEFUNCTION, CGB_curl_WMemCallback);
