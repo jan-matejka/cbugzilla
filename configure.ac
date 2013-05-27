@@ -39,7 +39,7 @@ LT_INIT([disable-static pic-only])
 PKG_CHECK_MODULES([CURL],[
 	libcurl
 ])
-PKG_CHECK_MODULES([BASEDIR],[
+PKG_CHECK_MODULES([XDG],[
 	libxdg-basedir
 ])
 
