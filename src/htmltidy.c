@@ -1,8 +1,7 @@
 #ifndef CGB_HTMLTIDY_C
 #define CGB_HTMLTIDY_C
 
-#include <tidy.h>
-#include <buffio.h>
+#include "cgb_htmltidy.h"
 
 TidyDoc CGB_tdoc_init(TidyDoc d) {
 	d = tidyCreate();

@@ -1,26 +1,10 @@
-#define VERBOSE 0
+#include "cgb.h"
 
-#define BO(...) if(EXIT_FAILURE == __VA_ARGS__) return EXIT_FAILURE;
 
 char *url_login = "/index.cgi";
 char *url_search_list = "/";
 char *auth_file = "./auth";
 char *url_namedcmd = "/buglist.cgi?cmdtype=runnamed&namedcmd=%s&limit=0";
-
-struct CGB_s;
-typedef struct CGB_s CGB_t;
-struct CGB_s {
-  CURL *curl;
-  CURLcode res;
-  CGBString_t url;
-  CGBString_t response;
-  FILE *log_response;
-  CGBString_t auth_user;
-  CGBString_t auth_pass;
-  CGBString_t cookiejar;
-  int verify_peer;
-  int verify_host;
-};
 
 CGB_t *CGB_new(void) {
   CGB_t *cgb = malloc(sizeof(CGB_t));
@@ -31,10 +15,10 @@ int CGB_init(CGB_t *cgb) {
   cgb->verify_peer = 1;
   cgb->verify_host = 1;
 
-  CGBString_init(cgb->response);
-  CGBString_init(cgb->url);
-  CGBString_init(cgb->auth_user);
-  CGBString_init(cgb->auth_pass);
+  CGBString_init(&cgb->response);
+  CGBString_init(&cgb->url);
+  CGBString_init(&cgb->auth_user);
+  CGBString_init(&cgb->auth_pass);
 
   BO(CGB_authRead(cgb))
   return EXIT_SUCCESS;
@@ -43,6 +27,7 @@ int CGB_init(CGB_t *cgb) {
 int CGB_cleanup(CGB_t *cgb) {
   curl_easy_cleanup(cgb->curl);
   curl_global_cleanup();
+  return EXIT_SUCCESS;
 }
 
 int CGB_authRead(CGB_t * cgb)
@@ -52,7 +37,11 @@ int CGB_authRead(CGB_t * cgb)
   char *tok;
 
   fp = fopen(auth_file,"r");
-  fread(&buf, sizeof(char), 256, fp);
+  if(!fp)
+    { perror("fopen"); return EXIT_FAILURE; }
+
+  if(256 != fread(&buf, sizeof(char), 256, fp))
+    return EXIT_FAILURE;
 
   tok = strtok(buf, "\n");
   BO(CGBString_realloc(&cgb->auth_user, strlen(tok)))
@@ -64,8 +53,10 @@ int CGB_authRead(CGB_t * cgb)
 
   if(cgb->auth_user.size == 0 || cgb->auth_pass.size == 0) {
     fprintf(stderr, "couldn't parse auth\n");
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
   }
+
+  return EXIT_SUCCESS;
 }
 
 int CGB_log_response(CGB_t *cgb, char *name) {
@@ -78,8 +69,11 @@ int CGB_log_response(CGB_t *cgb, char *name) {
   }
 
   fprintf(cgb->log_response, "NEW %s:\n", name);
-  fwrite(cgb->response.mem, cgb->response.len-1, sizeof(char), cgb->log_response);
+  if(cgb->response.len != fwrite(cgb->response.mem, cgb->response.len-1, sizeof(char), cgb->log_response))
+    return EXIT_FAILURE;
+
   fprintf(cgb->log_response, "\n\n");
+  return EXIT_SUCCESS;
 }
 
 /* vim: set sw=2 sts=2 et fdm=marker : */

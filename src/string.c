@@ -1,18 +1,9 @@
-#include <stdlib.h>
-#include <string.h>
+#include "cgb_string.h"
 
-struct CBGString_s;
-typedef struct CGBString_s CGBString_t;
-struct CGBString_s {
-	char *mem;
-	size_t size;
-	int len;
-};
-
-int CGBString_init(CGBString_t cgbs) {
-	cgbs.mem = NULL;
-	cgbs.size = 0;
-	cgbs.len  = 0;
+void CGBString_init(CGBString_t *cgbs) {
+	cgbs->mem = NULL;
+	cgbs->size = 0;
+	cgbs->len  = 0;
 }
 
 int CGBString_realloc(CGBString_t *s, int len) {
@@ -28,6 +19,8 @@ int CGBString_realloc(CGBString_t *s, int len) {
 	}
 	if(oldlen == 0)
 		memset(s->mem, 0, s->size);
+
+	return EXIT_SUCCESS;
 }
 
 void CGBString_free(CGBString_t *s) {

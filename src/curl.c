@@ -1,6 +1,4 @@
-#include <curl/curl.h>
-#include "string.c"
-#include "cgb.c"
+#include "cgb_curl.h"
 
 size_t
 CGB_curl_WMemCallback(void *ptr, size_t size, size_t nmemb, void *data)
@@ -8,7 +6,7 @@ CGB_curl_WMemCallback(void *ptr, size_t size, size_t nmemb, void *data)
 	size_t realsize = size * nmemb;
 
 	CGBString_t *cgbs = (CGBString_t *)data;
-	CGBString_init(*cgbs);
+	CGBString_init(cgbs);
 	if(size != sizeof(char)) {
 		fprintf(stderr, "unexpected size");
 		return EXIT_FAILURE;

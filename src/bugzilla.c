@@ -1,13 +1,11 @@
-#include "curl.c"
-#include "htmltidy.c"
-#include "bugzilla_parser.c"
-#include <stdlib.h>
+#include "bugzilla.h"
+#include <string.h>
 
 int CGB_bz_login(CGB_t * cgb)
 {
 	struct curl_httppost *formpost=NULL;
 	struct curl_httppost *lastptr=NULL;
-	struct curl_slist *headerlist=NULL;
+	//struct curl_slist *headerlist=NULL;
 
 	char *url=strdup(cgb->url.mem);
 	int len;
@@ -65,15 +63,4 @@ int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count) {
 	BO(CGB_parse_recordsCount(tdoc, tidyGetBody(tdoc), count))
 
 	return EXIT_SUCCESS;
-}
-
-int CGB_SavedQueries_get(CGB_t *cgb) {
-	curl_easy_setopt(cgb->curl, CURLOPT_URL, url_search_list);
-
-	BO(CGB_curl_perform(cgb))
-
-	TidyDoc tdoc;
-	BO(CGB_tidy_loadBuf(&tdoc, cgb->response.mem, cgb->response.size ))
-
-	CGB_SavedQueries_parse( tdoc, tidyGetBody(tdoc) );
 }

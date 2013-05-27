@@ -1,4 +1,9 @@
 #include "bugzilla.c"
+#include "bugzilla_parser.c"
+#include "curl.c"
+#include "htmltidy.c"
+#include "cgb.c"
+#include "string.c"
 
 int main(void)
 {

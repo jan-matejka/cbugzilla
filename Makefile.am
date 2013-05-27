@@ -1,5 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
+AM_CPPFLAGS = -I$(top_srcdir)/include/
+
 pkgconfdir = $(libdir)/pkgconfig
 
 pkgconf_DATA = cbugzilla.pc
