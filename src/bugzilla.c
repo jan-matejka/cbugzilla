@@ -57,6 +57,14 @@ int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count) {
 	if(EXIT_FAILURE == CGB_curl_perform(cgb))
 		return EXIT_FAILURE;
 
+	char *headline;
+	headline = malloc(100 *sizeof(char));
+	memset(headline, 0, 100*sizeof(char));
+	if(0 > sprintf(headline, "rec: %s\n", namedcmd))
+		fprintf(stderr,  "failure writing response.log\n");
+
+	CGB_log_response(cgb, headline);
+
 	TidyDoc tdoc;
 	BO(CGB_tidy_loadBuf(&tdoc, cgb->response.mem, cgb->response.size))
 

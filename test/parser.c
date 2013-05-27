@@ -1,4 +1,8 @@
 #include "../src/bugzilla.c"
+#include "../src/bugzilla_parser.c"
+#include "../src/htmltidy.c"
+#include "../src/curl.c"
+#include "../src/string.c"
 
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -10,7 +14,7 @@ int test_recordsCount() {
 	int count, fd;
 	void *response;
 	struct stat sb;
-	char file[] = "./response/namedcmd.html";
+	char file[] = "./test/response/namedcmd.html";
 
 	fd = open(file, O_RDONLY);
 	if (fd == -1)

@@ -39,6 +39,9 @@ LT_INIT([disable-static pic-only])
 PKG_CHECK_MODULES([CURL],[
 	libcurl
 ])
+PKG_CHECK_MODULES([BASEDIR],[
+	libxdg-basedir
+])
 
 # =================================
 # Hand written checker for htmltidy
@@ -61,7 +64,7 @@ AC_ARG_ENABLE([werror],
 AS_IF([test x"$enable_werror" != "xno"], [
 	CFLAGS="$CFLAGS -Werror"
 ])
-CFLAGS="$CFLAGS -Wall -Wextra -pedantic"
+CFLAGS="$CFLAGS -Wall -Wextra -pedantic -lxdg-basedir"
 
 # =====================
 # Prepare all .in files

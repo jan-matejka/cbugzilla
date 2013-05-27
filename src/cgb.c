@@ -1,9 +1,8 @@
 #include "cgb.h"
-
+#include <unistd.h>
 
 char *url_login = "/index.cgi";
 char *url_search_list = "/";
-char *auth_file = "./auth";
 char *url_namedcmd = "/buglist.cgi?cmdtype=runnamed&namedcmd=%s&limit=0";
 
 CGB_t *CGB_new(void) {
@@ -16,11 +15,12 @@ int CGB_init(CGB_t *cgb) {
   cgb->verify_host = 1;
 
   CGBString_init(&cgb->response);
+  CGBString_init(&cgb->response_log_f);
   CGBString_init(&cgb->url);
   CGBString_init(&cgb->auth_user);
   CGBString_init(&cgb->auth_pass);
+  cgb->log_response = NULL;
 
-  BO(CGB_authRead(cgb))
   return EXIT_SUCCESS;
 }
 
@@ -30,7 +30,7 @@ int CGB_cleanup(CGB_t *cgb) {
   return EXIT_SUCCESS;
 }
 
-int CGB_authRead(CGB_t * cgb)
+int CGB_authRead(CGB_t * cgb, char *auth_file)
 {
   FILE *fp;
   char buf[256];
@@ -40,7 +40,7 @@ int CGB_authRead(CGB_t * cgb)
   if(!fp)
     { perror("fopen"); return EXIT_FAILURE; }
 
-  if(256 != fread(&buf, sizeof(char), 256, fp))
+  if(0 == fread(&buf, sizeof(char), 256, fp))
     return EXIT_FAILURE;
 
   tok = strtok(buf, "\n");
@@ -61,7 +61,7 @@ int CGB_authRead(CGB_t * cgb)
 
 int CGB_log_response(CGB_t *cgb, char *name) {
   if(cgb->log_response == NULL) {
-    cgb->log_response = fopen("./response.log", "a");
+    cgb->log_response = fopen(cgb->response_log_f.mem, "a");
     if(cgb->log_response == NULL) {
       perror("fopen");
       return EXIT_FAILURE;
@@ -69,10 +69,12 @@ int CGB_log_response(CGB_t *cgb, char *name) {
   }
 
   fprintf(cgb->log_response, "NEW %s:\n", name);
-  if(cgb->response.len != fwrite(cgb->response.mem, cgb->response.len-1, sizeof(char), cgb->log_response))
+  unsigned int written = fwrite(cgb->response.mem, sizeof(char), cgb->response.len-1, cgb->log_response);
+  if(cgb->response.len-1 != written)
     return EXIT_FAILURE;
 
   fprintf(cgb->log_response, "\n\n");
+  sync();
   return EXIT_SUCCESS;
 }
 
