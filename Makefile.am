@@ -1,6 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
 AM_CPPFLAGS = -I$(top_srcdir)/include/
+AM_LDFLAGS = -no-undefined
 
 pkgconfdir = $(libdir)/pkgconfig
 
@@ -16,10 +17,12 @@ cbugzilla_SOURCES = \
 	src/main.c
 # not adding tidy as it is added to CFLAGS/LIBS directly
 cbugzilla_CFLAGS = \
-	$(CURL_CFLAGS)
+	$(CURL_CFLAGS) \
+	$(XDG_CFLAGS)
 cbugzilla_LDADD = \
-	$(CURL_LIBS)
-	cbugzilla.la
+	$(CURL_LIBS) \
+	$(XDG_LIBS) \
+	libcbugzilla.la
 
 lib_LTLIBRARIES = libcbugzilla.la
 libcbugzilla_la_SOURCES = \
@@ -39,8 +42,8 @@ parser_SOURCES = test/parser.c
 parser_CFLAGS = \
 	$(CURL_CFLAGS)
 parser_LDADD = \
-	$(CURL_LIBS)
-	cbugzilla.la
+	$(CURL_LIBS) \
+	libcbugzilla.la
 
 TESTS = parser
 
