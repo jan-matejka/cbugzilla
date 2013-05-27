@@ -4,13 +4,21 @@ AM_CPPFLAGS = -I$(top_srcdir)/include/
 AM_LDFLAGS = -no-undefined
 
 pkgconfdir = $(libdir)/pkgconfig
-
-pkgconf_DATA = cbugzilla.pc
+pkgconf_DATA = libcbugzilla.pc
 
 EXTRA_DIST = \
 	autogen.sh \
-	cbugzilla.pc.in
+	libcbugzilla.pc.in
 	test/response/namedcmd.html
+
+libcbugzilla_includedir = $(includedir)/libcbugzilla
+libcbugzilla_include_HEADERS = \
+	include/bugzilla.h \
+	include/bugzilla_parser.h \
+	include/cgb_curl.h \
+	include/cgb.h \
+	include/cgb_htmltidy.h \
+	include/cgb_string.h
 
 bin_PROGRAMS = cbugzilla
 cbugzilla_SOURCES = \

@@ -2,10 +2,10 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
-                                                                       
-Name: cbugzilla
+
+Name: libcbugzilla
 Description: Library for parsing the bugzilla API
 Version: @VERSION@
 Requires: curl
 Libs: -L${libdir} -lcbugzilla
-Cflags: -I${includedir}/cbugzilla
+Cflags: -I${includedir}/libcbugzilla

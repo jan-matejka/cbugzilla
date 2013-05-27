@@ -71,7 +71,7 @@ CFLAGS="$CFLAGS -Wall -Wextra -pedantic -lxdg-basedir"
 # =====================
 AC_CONFIG_FILES([
 	Makefile
-	cbugzilla.pc
+	libcbugzilla.pc
 ])
 AC_OUTPUT
 
