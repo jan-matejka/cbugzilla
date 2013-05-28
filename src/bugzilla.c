@@ -35,16 +35,17 @@ int CGB_bz_login(CGB_t * cgb)
 	return EXIT_SUCCESS;
 }
 
-int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count) {
+int CGB_bz_RecordsCount_get(CGB_t *cgb, const char *namedcmd, int *count) {
 	/* TODO: the number of results is almost at the top of the page.
 	 * So we can terminate the connection as soon as we read that number
 	 * (with custom writefunction callback)
 	 * and _maybe_ save some resources but probably not.
 	 */
 	char *url = strdup(cgb->url.mem);
-	int len = strlen(url_namedcmd) -2 + strlen(namedcmd) +1;
+	char *namedcmd_e = curl_easy_escape(cgb->curl, namedcmd, strlen(namedcmd));
+	int len = strlen(url_namedcmd) -2 + strlen(namedcmd_e) +1;
 	char query[len];
-	snprintf(query, len, url_namedcmd, namedcmd);
+	snprintf(query, len, url_namedcmd, namedcmd_e);
 	url = realloc(url, sizeof(char)*(cgb->url.len + strlen(query)));
 	strcat(url, query);
 

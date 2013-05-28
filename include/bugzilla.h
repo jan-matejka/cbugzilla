@@ -9,6 +9,6 @@
 #include "bugzilla_parser.h"
 
 int CGB_bz_login(CGB_t * cgb);
-int CGB_bz_RecordsCount_get(CGB_t *cgb, char *namedcmd, int *count);
+int CGB_bz_RecordsCount_get(CGB_t *cgb, const char *namedcmd, int *count);
 
 #endif /* CGB_BUGZILLA_H */
