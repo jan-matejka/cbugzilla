@@ -9,10 +9,19 @@
 #include <basedir.h>
 #include <basedir_fs.h>
 
+void usage(FILE *stream, char *self) {
+	fprintf(stream, "Usage: %s <namedcmd>\n\n"
+		"Authorization\n"
+		"  $XDG_CONFIG_HOME/cbugzilla/auth\n"
+		"  in format\n"
+		"     <username>\\n<password>\n"
+		, self);
+}
+
 int main(int argc, char **argv)
 {
 	if(argc < 2)
-		{ fprintf(stderr, "fu"); return EXIT_FAILURE; }
+		{ usage(stderr, argv[0]); return EXIT_FAILURE; }
 
 	xdgHandle *xdg = malloc(sizeof(xdgHandle));
 	xdg = xdgInitHandle(xdg);
