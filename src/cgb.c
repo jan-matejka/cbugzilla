@@ -1,6 +1,10 @@
 #include "cgb.h"
 #include <unistd.h>
 
+int V_MAJOR=0;
+int V_MINOR=1;
+int V_MICRO=0;
+
 char *url_login = "/index.cgi";
 char *url_search_list = "/";
 char *url_namedcmd = "/buglist.cgi?cmdtype=runnamed&namedcmd=%s&limit=0";

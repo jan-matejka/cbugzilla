@@ -8,20 +8,57 @@
 #include <string.h>
 #include <basedir.h>
 #include <basedir_fs.h>
+#include <unistd.h>
+#include <getopt.h>
 
-void usage(FILE *stream, char *self) {
-	fprintf(stream, "Usage: %s <namedcmd>\n\n"
-		"Authorization\n"
+void usage(FILE *stream) {
+	fprintf(stream, "Usage: cbugzilla <namedcmd>\n"
+		"       cbugzilla [-h|-v]\n"
+		"\n"
+		"Opptions:\n"
+		"  -h --help            print help\n"
+		"  -V --version         print version\n"
+		"\n"
+		"Bugzilla Authentication:\n"
 		"  $XDG_CONFIG_HOME/cbugzilla/auth\n"
 		"  in format\n"
 		"     <username>\\n<password>\n"
-		, self);
+		);
 }
+
+char shortopt[] = "Vh";
+struct option long_options[] = {
+	{"help", 0, 0, 'h'},
+	{"version", 0, 0, 'V'},
+	{0, 0, 0, 0}
+};
 
 int main(int argc, char **argv)
 {
-	if(argc < 2)
-		{ usage(stderr, argv[0]); return EXIT_FAILURE; }
+	int option_index, opt;
+
+	while ((option_index = -1) ,
+	       (opt=getopt_long(argc, argv,
+				shortopt, long_options,
+				&option_index)) != -1) {
+		switch(opt) {
+		case 'h':
+			usage(stdout);
+			return EXIT_SUCCESS;
+
+		case 'V':
+			printf("%d.%d.%d\n", V_MAJOR, V_MINOR, V_MICRO);
+			return EXIT_SUCCESS;
+
+		case ':':
+		case '?':
+			usage(stderr);
+			return EXIT_FAILURE;
+		}
+	}
+
+	if(optind+1 != argc)
+		{ usage(stderr); return EXIT_FAILURE; }
 
 	xdgHandle *xdg = malloc(sizeof(xdgHandle));
 	xdg = xdgInitHandle(xdg);
@@ -43,7 +80,7 @@ int main(int argc, char **argv)
 	CGB_log_response(cgb, "bz_login");
 
 	int records;
-	BO(CGB_bz_RecordsCount_get(cgb, argv[1], &records))
+	BO(CGB_bz_RecordsCount_get(cgb, argv[optind], &records))
 
 	printf("Records for python-herd: %d\n", records);
 

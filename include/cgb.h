@@ -9,6 +9,10 @@
 
 #define BO(...) if(EXIT_FAILURE == __VA_ARGS__) return EXIT_FAILURE;
 
+int V_MAJOR;
+int V_MINOR;
+int V_MICRO;
+
 char *url_login;
 char *url_search_list;
 char *auth_file;
