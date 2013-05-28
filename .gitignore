@@ -21,4 +21,5 @@ ChangeLog
 *.tar.*
 cbugzilla
 parser
+string
 stamp-h1

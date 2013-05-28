@@ -45,7 +45,7 @@ libcbugzilla_la_CFLAGS = \
 libcbugzilla_la_LDFLAGS = \
 	$(CURL_LIBS)
 
-check_PROGRAMS = parser
+check_PROGRAMS = parser string
 parser_SOURCES = test/parser.c
 parser_CFLAGS = \
 	$(CURL_CFLAGS)
@@ -53,7 +53,14 @@ parser_LDADD = \
 	$(CURL_LIBS) \
 	libcbugzilla.la
 
-TESTS = parser
+string_SOURCES = test/string.c
+string_CFLAGS = \
+	$(CURL_CFLAGS)
+string_LDADD = \
+	$(CURL_LIBS) \
+	libcbugzilla.la
+
+TESTS = parser string
 
 distclean-local:
 	rm -rf *.cache *~
