@@ -42,7 +42,7 @@ int CGB_parse_recordsCount(TidyDoc doc, TidyNode body, int *count) {
 				// I tried using tidyNodeGetValue instead but got only NULL. I don't get how to do this.
 				x = strchr((char *)buf.bp, '>');
 				if(NULL == x)
-					{ goto _next; }
+					{ step=-1; goto _next; }
 				y = strdup(x+1);
 				x = strchr(y, ' ');
 				*x = 0;
@@ -59,6 +59,8 @@ int CGB_parse_recordsCount(TidyDoc doc, TidyNode body, int *count) {
 
 		_next:
 			ch2 = tidyGetNext(ch1);
+			if(ch2 == NULL)
+				step = -1;
 			ch1 = ch2;
 	}
 }
