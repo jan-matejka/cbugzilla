@@ -6,9 +6,8 @@ CGB_curl_WMemCallback(void *ptr, size_t size, size_t nmemb, void *data)
 	size_t realsize = size * nmemb;
 
 	CGBString_t *cgbs = (CGBString_t *)data;
-	CGBString_init(cgbs);
 	if(size != sizeof(char)) {
-		fprintf(stderr, "unexpected size");
+		fprintf(stderr, "unexpected size\n");
 		return EXIT_FAILURE;
 		// FIXME: this probabl won't work
 	}
