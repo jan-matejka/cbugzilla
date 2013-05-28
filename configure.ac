@@ -23,6 +23,7 @@ AC_LANG([C])
 # ===========================
 # Find required base packages
 # ===========================
+LT_INIT([disable-static pic-only])
 AC_PROG_CC_C99
 AC_PROG_CPP
 AC_PROG_INSTALL
@@ -30,8 +31,6 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
 PKG_PROG_PKG_CONFIG([0.20])
-
-LT_INIT([disable-static pic-only])
 
 # ====================
 # Find additional apps
