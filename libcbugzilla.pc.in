@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: libcbugzilla
 Description: Library for parsing the bugzilla API
 Version: @VERSION@
-Requires: curl
+Requires: libcurl
 Libs: -L${libdir} -lcbugzilla
 Cflags: -I${includedir}/libcbugzilla
