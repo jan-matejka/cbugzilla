@@ -82,7 +82,7 @@ int main(int argc, char **argv)
 	int records;
 	BO(CGB_bz_RecordsCount_get(cgb, argv[optind], &records))
 
-	printf("Records for python-herd: %d\n", records);
+	printf("%d\n", records);
 
 	CGB_cleanup(cgb);
 	return EXIT_SUCCESS;
