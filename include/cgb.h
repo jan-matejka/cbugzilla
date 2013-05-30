@@ -21,15 +21,15 @@ char *url_namedcmd;
 struct CGB_s;
 typedef struct CGB_s CGB_t;
 struct CGB_s {
-	CURL *curl;
-	CURLcode res;
 	CGBString_t url;
 	CGBString_t response;
 	CGBString_t response_log_f;
-	FILE *log_response;
 	CGBString_t auth_user;
 	CGBString_t auth_pass;
 	CGBString_t cookiejar;
+	CURL *curl;
+	FILE *log_response;
+	CURLcode res;
 	int verify_peer;
 	int verify_host;
 };
