@@ -63,7 +63,7 @@ AC_ARG_ENABLE([werror],
 AS_IF([test x"$enable_werror" != "xno"], [
 	CFLAGS="$CFLAGS -Werror"
 ])
-CFLAGS="$CFLAGS -Wall -Wextra -pedantic -lxdg-basedir"
+CFLAGS="$CFLAGS -Wall -Wextra -pedantic"
 
 # =====================
 # Prepare all .in files
