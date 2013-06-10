@@ -1,6 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
 
-AM_CPPFLAGS = -I$(top_srcdir)/include/
 AM_LDFLAGS = -no-undefined
 
 pkgconfdir = $(libdir)/pkgconfig
@@ -15,10 +14,13 @@ libcbugzilla_includedir = $(includedir)/libcbugzilla
 libcbugzilla_include_HEADERS = \
 	include/bugzilla.h \
 	include/bugzilla_parser.h \
-	include/cgb_curl.h \
-	include/cgb.h \
-	include/cgb_htmltidy.h \
-	include/cgb_string.h
+	include/curl.h \
+	include/cb.h \
+	include/htmltidy.h \
+	include/string.h
+
+noinst_HEADERS = \
+	include/_cb.h
 
 bin_PROGRAMS = cbugzilla
 cbugzilla_SOURCES = \
@@ -36,7 +38,7 @@ lib_LTLIBRARIES = libcbugzilla.la
 libcbugzilla_la_SOURCES = \
 	src/bugzilla.c \
 	src/bugzilla_parser.c \
-	src/cgb.c \
+	src/cb.c \
 	src/curl.c \
 	src/htmltidy.c \
 	src/string.c

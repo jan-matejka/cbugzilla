@@ -28,9 +28,9 @@ int test_recordsCount() {
 		{ perror("mmap"); return EXIT_FAILURE; }
 
 	TidyDoc tdoc;
-	BO(CGB_tidy_loadBuf(&tdoc, response, sb.st_size))
+	BO(cb_tidy_loadBuf(&tdoc, response, sb.st_size))
 
-	BO(CGB_parse_recordsCount(tdoc, tidyGetBody(tdoc), &count))
+	BO(cb_parse_recordsCount(tdoc, tidyGetBody(tdoc), &count))
 	if(count != 420)
 		return EXIT_TESTFAIL;
 
@@ -38,7 +38,8 @@ int test_recordsCount() {
 }
 
 int main(void) {
-	switch(test_recordsCount()) {
+	int rc;
+	switch(rc = test_recordsCount()) {
 		case EXIT_FAILURE:
 			printf("recordsCount INTERFAILED\n");
 			break;
@@ -51,4 +52,5 @@ int main(void) {
 		default:
 			printf("recordsCount UNDEFINED\n");
 	}
+	return rc;
 }

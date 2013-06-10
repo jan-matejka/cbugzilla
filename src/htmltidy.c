@@ -1,9 +1,9 @@
-#ifndef CGB_HTMLTIDY_C
-#define CGB_HTMLTIDY_C
+#ifndef CB_HTMLTIDY_C
+#define CB_HTMLTIDY_C
 
-#include "cgb_htmltidy.h"
+#include <libcbugzilla/htmltidy.h>
 
-TidyDoc CGB_tdoc_init(TidyDoc d) {
+TidyDoc cb_tdoc_init(TidyDoc d) {
 	d = tidyCreate();
 
 	tidyOptSetBool( d, TidyQuiet, yes );
@@ -11,10 +11,10 @@ TidyDoc CGB_tdoc_init(TidyDoc d) {
 	return d;
 }
 
-int CGB_tidy_loadBuf(TidyDoc *d, void *buf, size_t buflen) {
+int cb_tidy_loadBuf(TidyDoc *d, void *buf, size_t buflen) {
 	int err;
 
-	*d = CGB_tdoc_init(*d);
+	*d = cb_tdoc_init(*d);
 	TidyBuffer _buf;
 	tidyBufInit(&_buf);
 	tidyBufAppend(&_buf, buf, buflen);
@@ -24,4 +24,4 @@ int CGB_tidy_loadBuf(TidyDoc *d, void *buf, size_t buflen) {
 	return EXIT_SUCCESS;
 }
 
-#endif /* CGB_HTMLTIDY_C */
+#endif /* CB_HTMLTIDY_C */

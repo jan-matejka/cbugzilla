@@ -1,15 +1,11 @@
-#include "bugzilla.c"
-#include "bugzilla_parser.c"
-#include "curl.c"
-#include "htmltidy.c"
-#include "cgb.c"
-#include "string.c"
 #include <stdlib.h>
 #include <string.h>
 #include <basedir.h>
 #include <basedir_fs.h>
 #include <unistd.h>
 #include <getopt.h>
+
+#include <libcbugzilla/cb.h>
 
 void usage(FILE *stream) {
 	fprintf(stream, "Usage: cbugzilla <namedcmd>\n"
@@ -32,6 +28,29 @@ struct option long_options[] = {
 	{"version", 0, 0, 'V'},
 	{0, 0, 0, 0}
 };
+
+int authRead(cbi_t cbi, char *auth_file)
+{
+	FILE *fp;
+	char buf[256];
+	char *tok;
+
+	fp = fopen(auth_file,"r");
+	if(!fp)
+		{ perror("fopen"); return EXIT_FAILURE; }
+
+	if(0 == fread(&buf, sizeof(char), 256, fp))
+		return EXIT_FAILURE;
+
+	tok = strtok(buf, "\n");
+
+	BO(cbi->set_auth_user(cbi, tok))
+
+	tok = strtok(NULL, "\n");
+	BO(cbi->set_auth_pass(cbi, tok))
+
+	return EXIT_SUCCESS;
+}
 
 int main(int argc, char **argv)
 {
@@ -67,23 +86,20 @@ int main(int argc, char **argv)
 	char *response_log = xdgDataFind("cbugzilla/response.log", xdg);
 	char *cookiejar    = xdgDataFind("cbugzilla/cookiejar", xdg);
 
-	CGB_t *cgb;
-	cgb = CGB_new();
-	BO(CGB_init(cgb))
-	BO(CGBString_dup(&cgb->response_log_f, response_log))
-	BO(CGB_authRead(cgb, auth_file))
-	BO(CGBString_dup(&cgb->url, "https://bugs.gentoo.org"))
-	BO(CGBString_dup(&cgb->cookiejar, cookiejar))
-	BO(CGB_init_curl(cgb))
+	cbi_t cbi = NULL;
+	cbi = cbi_new();
 
-	BO(CGB_bz_login(cgb))
-	CGB_log_response(cgb, "bz_login");
+	BO(authRead(cbi, auth_file))
+
+	BO(cbi->set_http_log_f(cbi, response_log))
+	BO(cbi->set_url(cbi, "https://bugs.gentoo.org"))
+	BO(cbi->set_cookiejar_f(cbi, cookiejar))
 
 	int records;
-	BO(CGB_bz_RecordsCount_get(cgb, argv[optind], &records))
+	BO(cbi->get_records_count(cbi, argv[optind], &records))
 
 	printf("%d\n", records);
 
-	CGB_cleanup(cgb);
+	cbi->free(cbi);
 	return EXIT_SUCCESS;
 }

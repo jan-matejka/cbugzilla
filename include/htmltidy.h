@@ -4,7 +4,7 @@
 #include <tidy.h>
 #include <buffio.h>
 
-TidyDoc CGB_tdoc_init(TidyDoc d);
-int CGB_tidy_loadBuf(TidyDoc *d, void *buf, size_t buflen);
+TidyDoc cb_tdoc_init(TidyDoc d);
+int cb_tidy_loadBuf(TidyDoc *d, void *buf, size_t buflen);
 
 #endif /* CGB_HTMLTIDY_H */

@@ -1,6 +1,6 @@
-#include "bugzilla.h"
+#include <libcbugzilla/bugzilla.h>
 
-int CGB_parse_recordsCount(TidyDoc doc, TidyNode body, int *count) {
+int cb_parse_recordsCount(TidyDoc doc, TidyNode body, int *count) {
 	/* TODO: the number is value of path:
 	 *	body div#bugzilla-body span.bz_result_count
 	 */

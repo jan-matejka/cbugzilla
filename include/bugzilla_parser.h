@@ -1,11 +1,11 @@
-#ifndef CGB_BUGZILLA_PARSER_H
-#define CGB_BUGZILLA_PARSER_H
+#ifndef CB_BUGZILLA_PARSER_H
+#define CB_BUGZILLA_PARSER_H
 
 #include <stdio.h>
 #include <string.h>
-#include "cgb_htmltidy.h"
+#include <libcbugzilla/htmltidy.h>
 
 /* Traverse the document tree */
-int CGB_parse_recordsCount(TidyDoc doc, TidyNode body, int *count);
+int cb_parse_recordsCount(TidyDoc doc, TidyNode body, int *count);
 
-#endif /* CGB_BUGZILLA_PARSER_H */
+#endif /* CB_BUGZILLA_PARSER_H */

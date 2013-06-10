@@ -1,12 +1,12 @@
-#include "cgb_string.h"
+#include <libcbugzilla/string.h>
 
-void CGBString_init(CGBString_t *cgbs) {
+void cb_string_init(cb_string_t *cgbs) {
 	cgbs->mem = NULL;
 	cgbs->size = 0;
 	cgbs->len  = 0;
 }
 
-int CGBString_realloc(CGBString_t *s, int len) {
+int cb_string_realloc(cb_string_t *s, int len) {
 	int oldlen = s->len;
 	s->len = len;
 	if(oldlen == 0)
@@ -23,7 +23,7 @@ int CGBString_realloc(CGBString_t *s, int len) {
 	return EXIT_SUCCESS;
 }
 
-void CGBString_free(CGBString_t *s) {
+void cb_string_free(cb_string_t *s) {
 	s->len = 0;
 	s->size = 0;
 	if(s->mem != NULL)
@@ -31,8 +31,8 @@ void CGBString_free(CGBString_t *s) {
 	s->mem = NULL;
 }
 
-int CGBString_dup(CGBString_t *s, char *cs) {
-	CGBString_free(s);
+int cb_string_dup(cb_string_t *s, const char *cs) {
+	cb_string_free(s);
 	s->mem = strdup(cs);
 	if(s->mem == NULL)
 		{ perror("strdup"); return EXIT_FAILURE; }

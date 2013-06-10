@@ -1,14 +1,14 @@
-#ifndef CGB_BUGZILLA_H
-#define CGB_BUGZILLA_H
+#ifndef CB_BUGZILLA_H
+#define CB_BUGZILLA_H
 
 #include <stdlib.h>
 #include <string.h>
 
-#include "cgb_curl.h"
-#include "cgb_htmltidy.h"
+#include "cb.h"
+#include "./htmltidy.h"
 #include "bugzilla_parser.h"
 
-int CGB_bz_login(CGB_t * cgb);
-int CGB_bz_RecordsCount_get(CGB_t *cgb, const char *namedcmd, int *count);
+int cb_bz_login(cb_t cb);
+int cb_bz_RecordsCount_get(cb_t cb, const char *namedcmd, int *count);
 
-#endif /* CGB_BUGZILLA_H */
+#endif /* CB_BUGZILLA_H */
