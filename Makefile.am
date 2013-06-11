@@ -12,16 +12,16 @@ EXTRA_DIST = \
 
 libcbugzilla_includedir = $(includedir)/libcbugzilla
 libcbugzilla_include_HEADERS = \
-	include/cb.h \
+	libcbugzilla/cb.h \
 	config.h
 
 noinst_HEADERS = \
-	include/bugzilla.h \
-	include/bugzilla_parser.h \
-	include/curl.h \
-	include/_cb.h \
-	include/htmltidy.h \
-	include/string.h
+	libcbugzilla/bugzilla.h \
+	libcbugzilla/bugzilla_parser.h \
+	libcbugzilla/curl.h \
+	libcbugzilla/_cb.h \
+	libcbugzilla/htmltidy.h \
+	libcbugzilla/string.h
 
 bin_PROGRAMS = cbugzilla
 cbugzilla_SOURCES = \
