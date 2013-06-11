@@ -1,6 +1,10 @@
 #include <libcbugzilla/bugzilla.h>
 #include <libcbugzilla/_cb.h>
 
+char *url_login = "/index.cgi";
+char *url_search_list = "/";
+char *url_namedcmd = "/buglist.cgi?cmdtype=runnamed&namedcmd=%s&limit=0";
+
 int cb_bz_login(cb_t cb)
 {
 	struct curl_httppost *formpost=NULL;

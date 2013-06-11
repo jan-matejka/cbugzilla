@@ -12,11 +12,6 @@
 
 char *version;
 
-char *url_login;
-char *url_search_list;
-char *auth_file;
-char *url_namedcmd;
-
 struct cb_s;
 typedef struct cb_s *cb_t;
 

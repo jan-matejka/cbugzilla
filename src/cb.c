@@ -8,12 +8,7 @@
 #include <libcbugzilla/_cb.h>
 #include <libcbugzilla/bugzilla.h>
 
-
 char *version = VERSION;
-
-char *url_login = "/index.cgi";
-char *url_search_list = "/";
-char *url_namedcmd = "/buglist.cgi?cmdtype=runnamed&namedcmd=%s&limit=0";
 
 int log_response(cb_t cb, char *name) {
 	if(cb->http_log == NULL) {
