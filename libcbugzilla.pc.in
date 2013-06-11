@@ -8,4 +8,3 @@ Description: Library for parsing the bugzilla API
 Version: @VERSION@
 Requires: libcurl
 Libs: -L${libdir} -lcbugzilla
-Cflags: -I${includedir}/libcbugzilla
