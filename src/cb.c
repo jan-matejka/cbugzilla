@@ -9,9 +9,7 @@
 #include <libcbugzilla/bugzilla.h>
 
 
-int V_MAJOR=0;
-int V_MINOR=1;
-int V_MICRO=0;
+char *version = VERSION;
 
 char *url_login = "/index.cgi";
 char *url_search_list = "/";

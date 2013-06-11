@@ -3,6 +3,9 @@
 
 #include <curl/curl.h>
 #include <stdio.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <libcbugzilla/string.h>
 
 #define VERBOSE 0
@@ -10,9 +13,7 @@
 #define BO(...) if(EXIT_FAILURE == __VA_ARGS__) return EXIT_FAILURE;
 #define NULLBO(...) if(NULL == __VA_ARGS__) return NULL
 
-int V_MAJOR;
-int V_MINOR;
-int V_MICRO;
+char *version;
 
 char *url_login;
 char *url_search_list;

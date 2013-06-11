@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 			return EXIT_SUCCESS;
 
 		case 'V':
-			printf("%d.%d.%d\n", V_MAJOR, V_MINOR, V_MICRO);
+			printf("%s\n", version);
 			return EXIT_SUCCESS;
 
 		case ':':
