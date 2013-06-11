@@ -1,6 +1,8 @@
 #ifndef CB__CB_H
 #define CB__CB_H
 
+#include <libcbugzilla/string.h>
+
 struct cb_s {
 	cb_string_t url;
 	cb_string_t http_log_f;

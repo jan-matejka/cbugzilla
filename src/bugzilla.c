@@ -1,7 +1,5 @@
-#include <string.h>
 #include <libcbugzilla/bugzilla.h>
-
-#include "libcbugzilla/_cb.h"
+#include <libcbugzilla/_cb.h>
 
 int cb_bz_login(cb_t cb)
 {

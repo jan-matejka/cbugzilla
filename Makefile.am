@@ -7,12 +7,13 @@ pkgconf_DATA = libcbugzilla.pc
 
 EXTRA_DIST = \
 	autogen.sh \
-	libcbugzilla.pc.in
+	libcbugzilla.pc.in \
 	test/response/namedcmd.html
 
 libcbugzilla_includedir = $(includedir)/libcbugzilla
 libcbugzilla_include_HEADERS = \
-	include/cb.h
+	include/cb.h \
+	config.h
 
 noinst_HEADERS = \
 	include/bugzilla.h \

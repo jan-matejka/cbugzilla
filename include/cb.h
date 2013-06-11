@@ -3,10 +3,7 @@
 
 #include <curl/curl.h>
 #include <stdio.h>
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
-#include <libcbugzilla/string.h>
 
 #define VERBOSE 0
 
