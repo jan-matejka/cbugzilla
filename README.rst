@@ -21,4 +21,17 @@ Set your authentication data in ~/.config/cbugzilla/auth (see cbugzilla -h for t
 
 And you get the number of records on STDOUT.
 
-Alternately, you can link against it and use CGB_t and related functions to call the query and get the number.
+Alternately, you can link with `<libcbugzilla/cb.h>` and use `cbi_t` to get the data.
+
+example::
+
+    % cbugzilla python-herd
+    428
+    % cbugzilla "yac cc'd"
+    17
+
+Tests
+=====
+::
+
+    make check
