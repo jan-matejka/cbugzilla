@@ -30,6 +30,8 @@ example::
     % cbugzilla "yac cc'd"
     17
 
+for example library usage see `main.c <./src/main.c>`_
+
 Tests
 =====
 ::
