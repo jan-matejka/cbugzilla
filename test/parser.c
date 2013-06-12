@@ -28,9 +28,12 @@ int test_recordsCount() {
 		{ perror("mmap"); return EXIT_FAILURE; }
 
 	TidyDoc tdoc;
-	BO(cb_tidy_loadBuf(&tdoc, response, sb.st_size))
+	if(0 != cb_tidy_loadBuf(&tdoc, response, sb.st_size))
+		return EXIT_FAILURE;
 
-	BO(cb_parse_recordsCount(tdoc, tidyGetBody(tdoc), &count))
+	if(0 != cb_parse_recordsCount(tdoc, tidyGetBody(tdoc), &count))
+		return EXIT_FAILURE;
+
 	if(count != 420)
 		return EXIT_TESTFAIL;
 

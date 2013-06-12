@@ -44,7 +44,12 @@ int cb_parse_recordsCount(TidyDoc doc, TidyNode body, int *count) {
 				if(NULL == x)
 					{ step=-1; goto _next; }
 				y = strdup(x+1);
+				if(NULL == y)
+					return EXIT_FAILURE;
+
 				x = strchr(y, ' ');
+				if(NULL == x)
+					{ step=-1; goto _next; }
 				*x = 0;
 				*count = atoi(y);
 				free(y);

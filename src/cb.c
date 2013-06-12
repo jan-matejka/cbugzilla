@@ -12,11 +12,13 @@ char *version = VERSION;
 
 int log_response(cb_t cb, char *name) {
 	if(cb->http_log == NULL) {
+		if(cb->http_log_f.size == 0)
+			return CB_SUCCESS;
+
 		cb->http_log = fopen(cb->http_log_f.mem, "a");
-		if(cb->http_log == NULL) {
-			perror("fopen");
-			return EXIT_FAILURE;
-		}
+
+		if(cb->http_log == NULL)
+			return CB_E;
 	}
 
 	fprintf(cb->http_log, "NEW %s:\n", name);
@@ -88,10 +90,10 @@ cbi_t cbi_new(void) {
 	cb_t cb;
 
 	cbi_t cbi = calloc(1, sizeof(struct cbi_s));
-	NULLBO(cbi);
+	CB_BO_NULL(cbi);
 
 	cbi->cb = calloc(1, sizeof(struct cb_s));
-	NULLBO(cbi->cb);
+	CB_BO_NULL(cbi->cb);
 
 	cbi->set_url          =  cbi_set_url;
 	cbi->set_http_log_f   =  cbi_set_http_log_f;
@@ -109,6 +111,8 @@ cbi_t cbi_new(void) {
 	cb->verify_peer = 1;
 	cb->verify_host = 1;
 
+	cb->curl_verbose = 0;
+
 	cb_string_init(&cb->response);
 	cb_string_init(&cb->http_log_f);
 	cb_string_init(&cb->url);
@@ -119,6 +123,7 @@ cbi_t cbi_new(void) {
 
 	cbi->free = cbi_free;
 
+	cb->http_log = NULL;
 	cb->log_response = log_response;
 	cb->curl_perform = cb_curl_perform;
 

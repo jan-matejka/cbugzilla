@@ -37,7 +37,7 @@ int authRead(cbi_t cbi, char *auth_file)
 
 	fp = fopen(auth_file,"r");
 	if(!fp)
-		{ perror("fopen"); return EXIT_FAILURE; }
+		{ perror("fopen: auth_file"); return EXIT_FAILURE; }
 
 	if(0 == fread(&buf, sizeof(char), 256, fp))
 		return EXIT_FAILURE;
@@ -89,9 +89,16 @@ int main(int argc, char **argv)
 	cbi_t cbi = NULL;
 	cbi = cbi_new();
 
+	if(strlen(auth_file) == 0) {
+		fprintf(stderr, "missing auth file\n");
+		return EXIT_FAILURE;
+	}
+
 	BO(authRead(cbi, auth_file))
 
-	BO(cbi->set_http_log_f(cbi, response_log))
+	if(strlen(response_log) > 0)
+		BO(cbi->set_http_log_f(cbi, response_log))
+
 	BO(cbi->set_url(cbi, "https://bugs.gentoo.org"))
 	BO(cbi->set_cookiejar_f(cbi, cookiejar))
 

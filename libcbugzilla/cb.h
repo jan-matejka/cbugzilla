@@ -5,10 +5,15 @@
 #include <stdio.h>
 #include "config.h"
 
-#define VERBOSE 0
+#define CB_SUCCESS 0
+#define CB_E 1
+#define CB_ECURL 2
 
-#define BO(...) if(EXIT_FAILURE == __VA_ARGS__) return EXIT_FAILURE;
-#define NULLBO(...) if(NULL == __VA_ARGS__) return NULL
+#define CB_ENULL(...)  if(NULL == __VA_ARGS__) return CB_E
+#define CB_BO(...) if(0 != __VA_ARGS__) return CB_E
+#define CB_BO_NULL(...) if(NULL == __VA_ARGS__) return NULL
+
+#define CB_CURLE(...) if(CURLE_OK != (cb->res = __VA_ARGS__)) return CB_ECURL
 
 char *version;
 

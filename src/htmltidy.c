@@ -2,6 +2,7 @@
 #define CB_HTMLTIDY_C
 
 #include <libcbugzilla/htmltidy.h>
+#include <libcbugzilla/cb.h>
 
 TidyDoc cb_tdoc_init(TidyDoc d) {
 	d = tidyCreate();

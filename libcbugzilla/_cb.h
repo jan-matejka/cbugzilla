@@ -16,6 +16,7 @@ struct cb_s {
 
 	cb_string_t response;
 	CURL *curl;
+	int curl_verbose;
 	FILE *http_log;
 	CURLcode res;
 	int (*log_response)(cb_t cb, char *name);
