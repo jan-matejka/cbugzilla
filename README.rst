@@ -32,6 +32,20 @@ example::
 
 for example library usage see `main.c <./src/main.c>`_
 
+Install
+=======
+
+gentoo::
+
+    emerge cbugzilla
+
+Source download
+===============
+
+You can the tarballs from http://dev.gentoo.org/~yac/distfiles/
+
+signing key: F97A36A1
+
 Tests
 =====
 ::
