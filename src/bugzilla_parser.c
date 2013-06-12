@@ -45,7 +45,7 @@ int cb_parse_recordsCount(TidyDoc doc, TidyNode body, int *count) {
 					{ step=-1; goto _next; }
 				y = strdup(x+1);
 				if(NULL == y)
-					return EXIT_FAILURE;
+					return CB_E;
 
 				x = strchr(y, ' ');
 				if(NULL == x)
@@ -54,12 +54,12 @@ int cb_parse_recordsCount(TidyDoc doc, TidyNode body, int *count) {
 				*count = atoi(y);
 				free(y);
 
-				return EXIT_SUCCESS;
+				return CB_SUCCESS;
 				break;
 
 			default:
 				fprintf(stderr, "DOM traversal failed\n");
-				return EXIT_FAILURE;
+				return CB_E;
 		}
 
 		_next:

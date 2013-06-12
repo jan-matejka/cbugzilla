@@ -21,8 +21,8 @@ int cb_tidy_loadBuf(TidyDoc *d, void *buf, size_t buflen) {
 	tidyBufAppend(&_buf, buf, buflen);
 	err = tidyParseBuffer(*d, &_buf);
 	if(err < 0)
-		return EXIT_FAILURE;
-	return EXIT_SUCCESS;
+		return CB_E;
+	return CB_SUCCESS;
 }
 
 #endif /* CB_HTMLTIDY_C */

@@ -37,19 +37,19 @@ int authRead(cbi_t cbi, char *auth_file)
 
 	fp = fopen(auth_file,"r");
 	if(!fp)
-		{ perror("fopen: auth_file"); return EXIT_FAILURE; }
+		{ perror("fopen: auth_file"); return CB_E; }
 
 	if(0 == fread(&buf, sizeof(char), 256, fp))
-		return EXIT_FAILURE;
+		return CB_E;
 
 	tok = strtok(buf, "\n");
 
-	BO(cbi->set_auth_user(cbi, tok))
+	CB_BO(cbi->set_auth_user(cbi, tok));
 
 	tok = strtok(NULL, "\n");
-	BO(cbi->set_auth_pass(cbi, tok))
+	CB_BO(cbi->set_auth_pass(cbi, tok));
 
-	return EXIT_SUCCESS;
+	return CB_SUCCESS;
 }
 
 int main(int argc, char **argv)
@@ -63,21 +63,21 @@ int main(int argc, char **argv)
 		switch(opt) {
 		case 'h':
 			usage(stdout);
-			return EXIT_SUCCESS;
+			return CB_SUCCESS;
 
 		case 'V':
 			printf("%s\n", version);
-			return EXIT_SUCCESS;
+			return CB_SUCCESS;
 
 		case ':':
 		case '?':
 			usage(stderr);
-			return EXIT_FAILURE;
+			return CB_E;
 		}
 	}
 
 	if(optind+1 != argc)
-		{ usage(stderr); return EXIT_FAILURE; }
+		{ usage(stderr); return CB_E; }
 
 	xdgHandle *xdg = malloc(sizeof(xdgHandle));
 	xdg = xdgInitHandle(xdg);
@@ -91,22 +91,22 @@ int main(int argc, char **argv)
 
 	if(strlen(auth_file) == 0) {
 		fprintf(stderr, "missing auth file\n");
-		return EXIT_FAILURE;
+		return CB_E;
 	}
 
-	BO(authRead(cbi, auth_file))
+	CB_BO(authRead(cbi, auth_file));
 
 	if(strlen(response_log) > 0)
-		BO(cbi->set_http_log_f(cbi, response_log))
+		CB_BO(cbi->set_http_log_f(cbi, response_log));
 
-	BO(cbi->set_url(cbi, "https://bugs.gentoo.org"))
-	BO(cbi->set_cookiejar_f(cbi, cookiejar))
+	CB_BO(cbi->set_url(cbi, "https://bugs.gentoo.org"));
+	CB_BO(cbi->set_cookiejar_f(cbi, cookiejar));
 
 	int records;
-	BO(cbi->get_records_count(cbi, argv[optind], &records))
+	CB_BO(cbi->get_records_count(cbi, argv[optind], &records));
 
 	printf("%d\n", records);
 
 	cbi->free(cbi);
-	return EXIT_SUCCESS;
+	return CB_SUCCESS;
 }

@@ -20,9 +20,9 @@ int cb_string_realloc(cb_string_t *s, const unsigned int len) {
 		s->mem = realloc(s->mem, s->size);
 
 	if(s->mem == NULL)
-		return EXIT_FAILURE;
+		return CB_E;
 
-	return EXIT_SUCCESS;
+	return CB_SUCCESS;
 }
 
 void cb_string_free(cb_string_t *s) {
@@ -37,10 +37,10 @@ int cb_string_dup(cb_string_t *s, const char *cs) {
 	cb_string_free(s);
 	s->mem = strdup(cs);
 	if(s->mem == NULL)
-		return EXIT_FAILURE;
+		return CB_E;
 
 	s->len = strlen(cs);
 	s->size = s->len * sizeof(char);
 
-	return EXIT_SUCCESS;
+	return CB_SUCCESS;
 }

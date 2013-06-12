@@ -28,60 +28,60 @@ int log_response(cb_t cb, char *name) {
 		cb->http_log);
 
 	if(cb->response.len-1 != written)
-		return EXIT_FAILURE;
+		return CB_E;
 
 	fprintf(cb->http_log, "\n\n");
 	sync();
-	return EXIT_SUCCESS;
+	return CB_SUCCESS;
 }
 
 /* {{{ cbi_t functions */
 int cbi_free(cbi_t cbi) {
 	curl_easy_cleanup(cbi->cb->curl);
 	curl_global_cleanup();
-	return EXIT_SUCCESS;
+	return CB_SUCCESS;
 }
 
 int cbi_get_recordsCount(cbi_t cbi, const char *namedcmd, int *count) {
-	BO(cb_bz_login(cbi->cb))
-	BO(cb_bz_RecordsCount_get(cbi->cb, namedcmd, count))
+	CB_BO(cb_bz_login(cbi->cb));
+	CB_BO(cb_bz_RecordsCount_get(cbi->cb, namedcmd, count));
 
-	return EXIT_SUCCESS;
+	return CB_SUCCESS;
 }
 
 /* {{{ setters */
 int cbi_set_url(cbi_t cbi, const char *c) {
-	BO(cb_string_realloc(&cbi->cb->url, strlen(c)))
-	BO(cb_string_dup(&cbi->cb->url, c))
-	return EXIT_SUCCESS;
+	CB_BO(cb_string_realloc(&cbi->cb->url, strlen(c)));
+	CB_BO(cb_string_dup(&cbi->cb->url, c));
+	return CB_SUCCESS;
 }
 int cbi_set_http_log_f(cbi_t cbi, const char *c) {
-	BO(cb_string_realloc(&cbi->cb->http_log_f, strlen(c)))
-	BO(cb_string_dup(&cbi->cb->http_log_f, c))
-	return EXIT_SUCCESS;
+	CB_BO(cb_string_realloc(&cbi->cb->http_log_f, strlen(c)));
+	CB_BO(cb_string_dup(&cbi->cb->http_log_f, c));
+	return CB_SUCCESS;
 }
 int cbi_set_cookiejar_f(cbi_t cbi, const char *c) {
-	BO(cb_string_realloc(&cbi->cb->cookiejar_f, strlen(c)))
-	BO(cb_string_dup(&cbi->cb->cookiejar_f, c))
-	return EXIT_SUCCESS;
+	CB_BO(cb_string_realloc(&cbi->cb->cookiejar_f, strlen(c)));
+	CB_BO(cb_string_dup(&cbi->cb->cookiejar_f, c));
+	return CB_SUCCESS;
 }
 int cbi_set_auth_user(cbi_t cbi, const char *c) {
-	BO(cb_string_realloc(&cbi->cb->auth_user, strlen(c)))
-	BO(cb_string_dup(&cbi->cb->auth_user, c))
-	return EXIT_SUCCESS;
+	CB_BO(cb_string_realloc(&cbi->cb->auth_user, strlen(c)));
+	CB_BO(cb_string_dup(&cbi->cb->auth_user, c));
+	return CB_SUCCESS;
 }
 int cbi_set_auth_pass(cbi_t cbi, const char *c) {
-	BO(cb_string_realloc(&cbi->cb->auth_pass, strlen(c)))
-	BO(cb_string_dup(&cbi->cb->auth_pass, c))
-	return EXIT_SUCCESS;
+	CB_BO(cb_string_realloc(&cbi->cb->auth_pass, strlen(c)));
+	CB_BO(cb_string_dup(&cbi->cb->auth_pass, c));
+	return CB_SUCCESS;
 }
 int cbi_set_verify_peer(cbi_t cbi, const int i) {
 	cbi->cb->verify_peer = i;
-	return EXIT_SUCCESS;
+	return CB_SUCCESS;
 }
 int cbi_set_verify_host(cbi_t cbi, const int i) {
 	cbi->cb->verify_host = i;
-	return EXIT_SUCCESS;
+	return CB_SUCCESS;
 }
 
 /* }}} setters */

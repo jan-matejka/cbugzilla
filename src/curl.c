@@ -25,11 +25,11 @@ cb_curl_WMemCallback(void *ptr, size_t size, size_t nmemb, void *data)
 
 int cb_init_curl(cb_t cb) {
 	if(curl_global_init(CURL_GLOBAL_SSL) > 0)
-		return EXIT_FAILURE;
+		return CB_E;
 
 	cb->curl = curl_easy_init();
 	if(!cb->curl)
-		return EXIT_FAILURE;
+		return CB_E;
 
 	CB_CURLE(curl_easy_setopt(cb->curl, CURLOPT_SSL_VERIFYPEER, cb->verify_peer));
 
@@ -42,14 +42,14 @@ int cb_init_curl(cb_t cb) {
 
 	CB_CURLE(curl_easy_setopt(cb->curl, CURLOPT_WRITEFUNCTION, cb_curl_WMemCallback));
 	CB_CURLE(curl_easy_setopt(cb->curl, CURLOPT_WRITEDATA, (void *)&cb->response));
-	return EXIT_SUCCESS;
+	return CB_SUCCESS;
 }
 
 int cb_curl_perform(cb_t cb) {
 	cb_string_free(&cb->response);
 	CB_CURLE(curl_easy_perform(cb->curl));
 
-	return EXIT_SUCCESS;
+	return CB_SUCCESS;
 }
 
 #endif

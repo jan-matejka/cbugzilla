@@ -37,11 +37,11 @@ int cb_bz_login(cb_t cb)
 		CURLFORM_END));
 
 	CB_CURLE(curl_easy_setopt(cb->curl, CURLOPT_HTTPPOST, formpost));
-	CB_BO(cb->curl_perform(cb))
+	CB_BO(cb->curl_perform(cb));
 
 	curl_formfree(formpost);
 
-	return EXIT_SUCCESS;
+	return CB_SUCCESS;
 }
 
 int cb_bz_RecordsCount_get(cb_t cb, const char *namedcmd, int *count) {
@@ -83,11 +83,11 @@ int cb_bz_RecordsCount_get(cb_t cb, const char *namedcmd, int *count) {
 	cb->log_response(cb, headline);
 
 	TidyDoc tdoc;
-	BO(cb_tidy_loadBuf(&tdoc,
+	CB_BO(cb_tidy_loadBuf(&tdoc,
 		cb->response.mem,
-		cb->response.size))
+		cb->response.size));
 
-	BO(cb_parse_recordsCount(tdoc, tidyGetBody(tdoc), count))
+	CB_BO(cb_parse_recordsCount(tdoc, tidyGetBody(tdoc), count));
 
-	return EXIT_SUCCESS;
+	return CB_SUCCESS;
 }
