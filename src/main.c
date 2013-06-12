@@ -89,6 +89,11 @@ int main(int argc, char **argv)
 	cbi_t cbi = NULL;
 	cbi = cbi_new();
 
+	if(NULL == cbi) {
+		fprintf(stderr, "failure while creating cbi\n");
+		return CB_E;
+	}
+
 	if(strlen(auth_file) == 0) {
 		fprintf(stderr, "missing auth file\n");
 		return CB_E;
@@ -101,6 +106,14 @@ int main(int argc, char **argv)
 
 	CB_BO(cbi->set_url(cbi, "https://bugs.gentoo.org"));
 	CB_BO(cbi->set_cookiejar_f(cbi, cookiejar));
+
+	int res;
+	if(0 < (res = cbi->init_curl(cbi))) {
+		fprintf(stderr, "cbi->init_curl failed\n");
+		if(res == CB_ECURL)
+			fprintf(stderr, "curl failed: %s\n", curl_easy_strerror(cbi->get_curl_code(cbi)));
+		return CB_E;
+	}
 
 	int records;
 	CB_BO(cbi->get_records_count(cbi, argv[optind], &records));

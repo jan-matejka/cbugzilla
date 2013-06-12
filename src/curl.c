@@ -23,7 +23,9 @@ cb_curl_WMemCallback(void *ptr, size_t size, size_t nmemb, void *data)
 	return realsize;
 }
 
-int cb_init_curl(cb_t cb) {
+int cbi_init_curl(cbi_t cbi) {
+	cb_t cb = cbi->cb;
+
 	if(curl_global_init(CURL_GLOBAL_SSL) > 0)
 		return CB_E;
 

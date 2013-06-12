@@ -22,7 +22,9 @@ int log_response(cb_t cb, char *name) {
 	}
 
 	fprintf(cb->http_log, "NEW %s:\n", name);
-	unsigned int written = fwrite(cb->response.mem,
+	unsigned int written = 0;
+
+	written = fwrite(cb->response.mem,
 		sizeof(char),
 		cb->response.len-1,
 		cb->http_log);
@@ -86,6 +88,10 @@ int cbi_set_verify_host(cbi_t cbi, const int i) {
 
 /* }}} setters */
 
+CURLcode cbi_get_curl_code(cbi_t cbi) {
+	return cbi->cb->res;
+}
+
 cbi_t cbi_new(void) {
 	cb_t cb;
 
@@ -109,7 +115,7 @@ cbi_t cbi_new(void) {
 	cb = cbi->cb;
 
 	cb->verify_peer = 1;
-	cb->verify_host = 1;
+	cb->verify_host = 2;
 
 	cb->curl_verbose = 0;
 
@@ -119,9 +125,9 @@ cbi_t cbi_new(void) {
 	cb_string_init(&cb->auth_user);
 	cb_string_init(&cb->auth_pass);
 
-	cb_init_curl(cb);
-
 	cbi->free = cbi_free;
+	cbi->init_curl = cbi_init_curl;
+	cbi->get_curl_code = cbi_get_curl_code;
 
 	cb->http_log = NULL;
 	cb->log_response = log_response;
@@ -129,6 +135,7 @@ cbi_t cbi_new(void) {
 
 	return cbi;
 }
+
 /* }}} cbi_t functions */
 
 #endif /* CB_CB_C */

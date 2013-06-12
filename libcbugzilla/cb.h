@@ -24,6 +24,8 @@ struct cbi_s;
 typedef struct cbi_s *cbi_t;
 struct cbi_s {
 	int (*free)(cbi_t cbi);
+	int (*init_curl)(cbi_t cbi);
+	CURLcode (*get_curl_code)(cbi_t cbi);
 
 	/* {{{ Configuration accessors */
 
