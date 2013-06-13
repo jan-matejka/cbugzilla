@@ -11,6 +11,9 @@
 char *version = VERSION;
 
 int log_response(cb_t cb, char *name) {
+	if(cb->response.len <= 1)
+		return CB_SUCCESS; // nothing to do
+
 	if(cb->http_log == NULL) {
 		if(cb->http_log_f.size == 0)
 			return CB_SUCCESS;
