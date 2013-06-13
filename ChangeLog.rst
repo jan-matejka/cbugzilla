@@ -1,3 +1,11 @@
+next
+====
+
+* more safety checks thanks to 0xabad1dea
+
+* API change in 4c9b2cf cbi->get_records_count now uses `unsigned long int
+*count` instead of `int *`
+
 0.2.0
 =====
 
