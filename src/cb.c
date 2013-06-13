@@ -8,8 +8,6 @@
 #include <libcbugzilla/_cb.h>
 #include <libcbugzilla/bugzilla.h>
 
-char *version = VERSION;
-
 int log_response(cb_t cb, char *name) {
 	if(cb->response.len <= 1)
 		return CB_SUCCESS; // nothing to do

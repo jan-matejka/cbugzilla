@@ -6,6 +6,7 @@
 #include <getopt.h>
 
 #include <libcbugzilla/cb.h>
+#include "config.h"
 
 void usage(FILE *stream) {
 	fprintf(stream, "Usage: cbugzilla <namedcmd>\n"
@@ -70,7 +71,7 @@ int main(int argc, char **argv)
 			return CB_SUCCESS;
 
 		case 'V':
-			printf("%s\n", version);
+			printf("%s\n", PACKAGE_VERSION);
 			return CB_SUCCESS;
 
 		case ':':
