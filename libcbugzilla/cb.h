@@ -18,8 +18,6 @@
 
 #define CB_CURLE(...) if(CURLE_OK != (cb->res = __VA_ARGS__)) return CB_ECURL
 
-char *version;
-
 struct cb_s;
 typedef struct cb_s *cb_t;
 
