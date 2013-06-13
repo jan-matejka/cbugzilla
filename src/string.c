@@ -9,8 +9,7 @@ void cb_string_init(cb_string_t *cgbs) {
 
 int cb_string_realloc(cb_string_t *s, const unsigned int len) {
 	unsigned int oldlen = s->len;
-	s->len = (oldlen == 0) ? len+1 : len;
-	// count the NULL byte only firt time
+	s->len = len+1; // + NULL byte
 
 	s->size = sizeof(char) * (s->len);
 
