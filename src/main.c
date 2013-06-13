@@ -19,6 +19,7 @@ void usage(FILE *stream) {
 		"  $XDG_CONFIG_HOME/cbugzilla/auth\n"
 		"  in format\n"
 		"     <username>\\n<password>\n"
+		"  note: if you need more than 255 characters you're screwed\n"
 		);
 }
 
@@ -35,6 +36,8 @@ int authRead(cbi_t cbi, char *auth_file)
 	char buf[256];
 	char *tok;
 
+	memset(&buf, 0, 256);
+
 	fp = fopen(auth_file,"r");
 	if(!fp)
 		{ perror("fopen: auth_file"); return CB_E; }
@@ -42,6 +45,7 @@ int authRead(cbi_t cbi, char *auth_file)
 	if(0 == fread(&buf, sizeof(char), 256, fp))
 		return CB_E;
 
+	buf[255] = '\0';
 	tok = strtok(buf, "\n");
 
 	CB_BO(cbi->set_auth_user(cbi, tok));
