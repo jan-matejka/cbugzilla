@@ -45,6 +45,9 @@ int cbi_free(cbi_t cbi) {
 }
 
 int cbi_get_recordsCount(cbi_t cbi, const char *namedcmd, int *count) {
+	if(count == NULL)
+		return -EINVAL;
+
 	CB_BO(cb_bz_login(cbi->cb));
 	CB_BO(cb_bz_RecordsCount_get(cbi->cb, namedcmd, count));
 

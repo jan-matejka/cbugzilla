@@ -9,8 +9,11 @@
 #define CB_E 1
 #define CB_ECURL 2
 
+// standard errors (errno.h) shall be returned as their negative value.
+
 #define CB_ENULL(...)  if(NULL == __VA_ARGS__) return CB_E
 #define CB_BO(...) if(0 != __VA_ARGS__) return CB_E
+// TODO: CB_BO shall return the same value as returned by __VA_ARGS__
 #define CB_BO_NULL(...) if(NULL == __VA_ARGS__) return NULL
 
 #define CB_CURLE(...) if(CURLE_OK != (cb->res = __VA_ARGS__)) return CB_ECURL

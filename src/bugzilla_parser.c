@@ -1,9 +1,12 @@
-#include <libcbugzilla/bugzilla.h>
+#include <libcbugzilla/bugzilla_parser.h>
 
 int cb_parse_recordsCount(TidyDoc doc, TidyNode body, int *count) {
 	/* TODO: the number is value of path:
 	 *	body div#bugzilla-body span.bz_result_count
 	 */
+	if(count == NULL)
+		return -EINVAL;
+
 	TidyNode ch1, ch2;
 	ctmbstr s;
 	TidyBuffer buf;

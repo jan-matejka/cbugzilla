@@ -50,6 +50,9 @@ int cb_bz_RecordsCount_get(cb_t cb, const char *namedcmd, int *count) {
 	 * (with custom writefunction callback)
 	 * and _maybe_ save some resources but probably not.
 	 */
+	if(count == NULL)
+		return -EINVAL;
+
 	char *url = strdup(cb->url.mem);
 	CB_ENULL(url);
 
