@@ -77,7 +77,7 @@ int cb_bz_RecordsCount_get(cb_t cb, const char *namedcmd, int *count) {
 	char *headline;
 	headline = calloc(100, sizeof(char));
 
-	if(0 > sprintf(headline, "rec: %s\n", namedcmd))
+	if(0 > sprintf(headline, "rec: %93s\n", namedcmd))
 		return CB_E;
 
 	cb->log_response(cb, headline);
