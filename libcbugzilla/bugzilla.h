@@ -10,6 +10,6 @@
 #include "libcbugzilla/bugzilla_parser.h"
 
 int cb_bz_login(cb_t cb);
-int cb_bz_RecordsCount_get(cb_t cb, const char *namedcmd, int *count);
+int cb_bz_RecordsCount_get(cb_t cb, const char *namedcmd, unsigned long int *count);
 
 #endif /* CB_BUGZILLA_H */

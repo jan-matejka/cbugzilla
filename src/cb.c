@@ -44,7 +44,7 @@ int cbi_free(cbi_t cbi) {
 	return CB_SUCCESS;
 }
 
-int cbi_get_recordsCount(cbi_t cbi, const char *namedcmd, int *count) {
+int cbi_get_recordsCount(cbi_t cbi, const char *namedcmd, unsigned long int *count) {
 	if(count == NULL)
 		return -EINVAL;
 

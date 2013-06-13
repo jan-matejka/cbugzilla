@@ -10,6 +10,6 @@
 #include "libcbugzilla/cb.h"
 
 /* Traverse the document tree */
-int cb_parse_recordsCount(TidyDoc doc, TidyNode body, int *count);
+int cb_parse_recordsCount(TidyDoc doc, TidyNode body, unsigned long int *count);
 
 #endif /* CB_BUGZILLA_PARSER_H */

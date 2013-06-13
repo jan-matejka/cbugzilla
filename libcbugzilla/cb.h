@@ -55,7 +55,7 @@ struct cbi_s {
 
 	/* {{{ action calls */
 
-	int (*get_records_count)(cbi_t cbi, const char *namedcmd, int *count);
+	int (*get_records_count)(cbi_t cbi, const char *namedcmd, unsigned long int *count);
 
 	/* }}} */
 

@@ -115,10 +115,10 @@ int main(int argc, char **argv)
 		return CB_E;
 	}
 
-	int records;
+	unsigned long int records;
 	CB_BO(cbi->get_records_count(cbi, argv[optind], &records));
 
-	printf("%d\n", records);
+	printf("%ld\n", records);
 
 	cbi->free(cbi);
 	return CB_SUCCESS;

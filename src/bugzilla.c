@@ -44,7 +44,7 @@ int cb_bz_login(cb_t cb)
 	return CB_SUCCESS;
 }
 
-int cb_bz_RecordsCount_get(cb_t cb, const char *namedcmd, int *count) {
+int cb_bz_RecordsCount_get(cb_t cb, const char *namedcmd, unsigned long int *count) {
 	/* TODO: the number of results is almost at the top of the page.
 	 * So we can terminate the connection as soon as we read that number
 	 * (with custom writefunction callback)
