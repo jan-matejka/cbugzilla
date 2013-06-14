@@ -15,6 +15,7 @@ void usage(FILE *stream) {
 		"Opptions:\n"
 		"  -h --help            print help\n"
 		"  -V --version         print version\n"
+		"  -t --times           print timing information\n"
 		"\n"
 		"Bugzilla Authentication:\n"
 		"  $XDG_CONFIG_HOME/cbugzilla/auth\n"
@@ -24,9 +25,10 @@ void usage(FILE *stream) {
 		);
 }
 
-char shortopt[] = "Vh";
+char shortopt[] = "Vht";
 struct option long_options[] = {
 	{"help", 0, 0, 'h'},
+	{"times", 0, 0, 't'},
 	{"version", 0, 0, 'V'},
 	{0, 0, 0, 0}
 };
@@ -57,9 +59,41 @@ int authRead(cbi_t cbi, char *auth_file)
 	return CB_SUCCESS;
 }
 
+static void print_time(char *name, double delta) {
+	if(delta < 0)
+		printf("\t%s: error getting value\n", name);
+	else
+		printf("\t%s: %f\n", name, delta);
+}
+
+static void print_times(cbi_t cbi) {
+	printf("timing info:\n");
+	double delta;
+	if(CB_SUCCESS != cbi->get_total_time(cbi, &delta))
+		delta = -1;
+	print_time("total", delta);
+
+	if(CB_SUCCESS != cbi->get_namelookup_time(cbi, &delta))
+		delta = -1;
+	print_time("namelookup", delta);
+
+	if(CB_SUCCESS != cbi->get_pretransfer_time(cbi, &delta))
+		delta = -1;
+	print_time("pretransfer", delta);
+
+	if(CB_SUCCESS != cbi->get_starttransfer_time(cbi, &delta))
+		delta = -1;
+	print_time("starttransfer", delta);
+
+	if(CB_SUCCESS != cbi->get_connect_time(cbi, &delta))
+		delta = -1;
+	print_time("connect", delta);
+}
+
 int main(int argc, char **argv)
 {
 	int option_index, opt;
+	int times = 0;
 
 	while ((option_index = -1) ,
 	       (opt=getopt_long(argc, argv,
@@ -73,6 +107,10 @@ int main(int argc, char **argv)
 		case 'V':
 			printf("%s\n", PACKAGE_VERSION);
 			return CB_SUCCESS;
+
+		case 't':
+			times = 1;
+			break;
 
 		case ':':
 		case '?':
@@ -124,6 +162,9 @@ int main(int argc, char **argv)
 	CB_BO(cbi->get_records_count(cbi, argv[optind], &records));
 
 	printf("%ld\n", records);
+
+	if(times)
+		print_times(cbi);
 
 	cbi->free(cbi);
 	return CB_SUCCESS;

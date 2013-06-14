@@ -96,6 +96,30 @@ CURLcode cbi_get_curl_code(cbi_t cbi) {
 	return cbi->cb->res;
 }
 
+static CB_USED int cbi_get_curl_time(const cbi_t cbi, CURLINFO info, double *delta) {
+	cb_t cb = cbi->cb;
+
+	CB_CURLE(curl_easy_getinfo(cb->curl, info, delta));
+
+	return CB_SUCCESS;
+}
+
+static int cbi_get_total_time(const cbi_t cbi, double *delta) {
+	return cbi_get_curl_time(cbi, CURLINFO_TOTAL_TIME, delta);
+}
+static int cbi_get_namelookup_time(const cbi_t cbi, double *delta) {
+	return cbi_get_curl_time(cbi, CURLINFO_NAMELOOKUP_TIME, delta);
+}
+static int cbi_get_pretransfer_time(const cbi_t cbi, double *delta) {
+	return cbi_get_curl_time(cbi, CURLINFO_PRETRANSFER_TIME, delta);
+}
+static int cbi_get_starttransfer_time(const cbi_t cbi, double *delta) {
+	return cbi_get_curl_time(cbi, CURLINFO_STARTTRANSFER_TIME, delta);
+}
+static int cbi_get_connect_time(const cbi_t cbi, double *delta) {
+	return cbi_get_curl_time(cbi, CURLINFO_CONNECT_TIME, delta);
+}
+
 cbi_t cbi_new(void) {
 	cb_t cb;
 
@@ -132,6 +156,14 @@ cbi_t cbi_new(void) {
 	cbi->free = cbi_free;
 	cbi->init_curl = cbi_init_curl;
 	cbi->get_curl_code = cbi_get_curl_code;
+
+
+	cbi->get_total_time = cbi_get_total_time;
+	cbi->get_namelookup_time = cbi_get_namelookup_time;
+	cbi->get_pretransfer_time = cbi_get_pretransfer_time;
+	cbi->get_starttransfer_time = cbi_get_starttransfer_time;
+	cbi->get_connect_time = cbi_get_connect_time;
+
 
 	cb->http_log = NULL;
 	cb->log_response = log_response;

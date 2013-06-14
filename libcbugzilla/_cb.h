@@ -3,6 +3,8 @@
 
 #include <libcbugzilla/string.h>
 
+#define CB_USED __attribute__ ((used))
+
 struct cb_s {
 	cb_string_t url;
 	cb_string_t http_log_f;
