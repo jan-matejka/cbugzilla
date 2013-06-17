@@ -1,10 +1,12 @@
-next
-====
+0.2.1
+=====
 
 * more safety checks thanks to 0xabad1dea
 
 * API change in 4c9b2cf cbi->get_records_count now uses `unsigned long int
 *count` instead of `int *`
+
+* getters for time deltas measurements
 
 0.2.0
 =====

@@ -7,7 +7,7 @@ AC_PREREQ([2.65])
 # ====================
 m4_define([cbugzilla_version_major],[0])
 m4_define([cbugzilla_version_minor],[2])
-m4_define([cbugzilla_version_micro],[0])
+m4_define([cbugzilla_version_micro],[1])
 m4_define([cbugzilla_version],[cbugzilla_version_major.cbugzilla_version_minor.cbugzilla_version_micro])
 
 # =============
