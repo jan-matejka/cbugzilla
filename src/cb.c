@@ -2,6 +2,7 @@
 #define CB_CB_C
 
 #include <unistd.h>
+#include <time.h>
 
 #include <libcbugzilla/cb.h>
 #include <libcbugzilla/curl.h>
@@ -50,7 +51,31 @@ int cbi_get_recordsCount(cbi_t cbi, const char *namedcmd, unsigned long int *cou
 		return -EINVAL;
 
 	CB_BO(cb_bz_login(cbi->cb));
+
+	int measure_failed = 0;
+	struct timespec start, end;
+	if(0 != clock_gettime(CLOCK_MONOTONIC, &start)) {
+		//CCBWARNING("clock_gettime failed %s:%d", __FILE__, __LINE__);
+		cbi->cb->total_time = -1;
+		measure_failed = 1;
+	}
+
 	CB_BO(cb_bz_RecordsCount_get(cbi->cb, namedcmd, count));
+
+	if(measure_failed)
+		return CB_SUCCESS;
+
+	if(0 != clock_gettime(CLOCK_MONOTONIC, &end)) {
+		//CCBWARNING("clock_gettime failed %s:%d", __FILE__, __LINE__);
+		return CB_SUCCESS;
+	}
+
+	long x;
+	double y;
+	x = end.tv_sec - start.tv_sec;
+	y = ((end.tv_nsec - start.tv_nsec))*(1.0/(1000 * 1000 * 1000));
+
+	cbi->cb->total_time = x+y;
 
 	return CB_SUCCESS;
 }
@@ -104,7 +129,7 @@ static CB_USED int cbi_get_curl_time(const cbi_t cbi, CURLINFO info, double *del
 	return CB_SUCCESS;
 }
 
-static int cbi_get_total_time(const cbi_t cbi, double *delta) {
+static int cbi_get_total_response_time(const cbi_t cbi, double *delta) {
 	return cbi_get_curl_time(cbi, CURLINFO_TOTAL_TIME, delta);
 }
 static int cbi_get_namelookup_time(const cbi_t cbi, double *delta) {
@@ -118,6 +143,13 @@ static int cbi_get_starttransfer_time(const cbi_t cbi, double *delta) {
 }
 static int cbi_get_connect_time(const cbi_t cbi, double *delta) {
 	return cbi_get_curl_time(cbi, CURLINFO_CONNECT_TIME, delta);
+}
+static int cbi_get_total_time(const cbi_t cbi, double *delta) {
+	if(cbi->cb->total_time < 0)
+		return CB_E;
+
+	*delta = cbi->cb->total_time;
+	return CB_SUCCESS;
 }
 
 cbi_t cbi_new(void) {
@@ -142,6 +174,7 @@ cbi_t cbi_new(void) {
 
 	cb = cbi->cb;
 
+	cb->total_time = -1;
 	cb->verify_peer = 1;
 	cb->verify_host = 2;
 
@@ -158,11 +191,12 @@ cbi_t cbi_new(void) {
 	cbi->get_curl_code = cbi_get_curl_code;
 
 
-	cbi->get_total_time = cbi_get_total_time;
+	cbi->get_total_response_time = cbi_get_total_response_time;
 	cbi->get_namelookup_time = cbi_get_namelookup_time;
 	cbi->get_pretransfer_time = cbi_get_pretransfer_time;
 	cbi->get_starttransfer_time = cbi_get_starttransfer_time;
 	cbi->get_connect_time = cbi_get_connect_time;
+	cbi->get_total_time = cbi_get_total_time;
 
 
 	cb->http_log = NULL;

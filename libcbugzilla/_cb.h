@@ -24,6 +24,8 @@ struct cb_s {
 	int (*log_response)(cb_t cb, char *name);
 	int (*curl_perform)(cb_t cb);
 
+	double total_time;
+
 	int (*destroy)(cb_t cgb);
 	int (*get_records_count)(cb_t cb, const char *namedcmd, int *count);
 };

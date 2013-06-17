@@ -69,9 +69,9 @@ static void print_time(char *name, double delta) {
 static void print_times(cbi_t cbi) {
 	printf("timing info:\n");
 	double delta;
-	if(CB_SUCCESS != cbi->get_total_time(cbi, &delta))
+	if(CB_SUCCESS != cbi->get_total_response_time(cbi, &delta))
 		delta = -1;
-	print_time("total", delta);
+	print_time("total response", delta);
 
 	if(CB_SUCCESS != cbi->get_namelookup_time(cbi, &delta))
 		delta = -1;
@@ -88,6 +88,10 @@ static void print_times(cbi_t cbi) {
 	if(CB_SUCCESS != cbi->get_connect_time(cbi, &delta))
 		delta = -1;
 	print_time("connect", delta);
+
+	if(CB_SUCCESS != cbi->get_total_time(cbi, &delta))
+		delta = -1;
+	print_time("total", delta);
 }
 
 int main(int argc, char **argv)

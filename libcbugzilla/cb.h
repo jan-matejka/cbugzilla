@@ -58,12 +58,14 @@ struct cbi_s {
 	/* }}} */
 
 	/* {{{ response time getter, these map directly to CURL_<type>_TIME */
-	int (*get_total_time)(const cbi_t cbi, double *delta);
+	int (*get_total_response_time)(const cbi_t cbi, double *delta); // besides this one, which is curl's CURL_TOTAL_TIME
 	int (*get_namelookup_time)(const cbi_t cbi, double *delta);
 	int (*get_pretransfer_time)(const cbi_t cbi, double *delta);
 	int (*get_starttransfer_time)(const cbi_t cbi, double *delta);
 	int (*get_connect_time)(const cbi_t cbi, double *delta);
 	/* }}} */
+
+	int (*get_total_time)(const cbi_t cbi, double *delta);
 
 	/* {{{ internal stuff */
 	cb_t cb;
