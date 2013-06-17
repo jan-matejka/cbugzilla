@@ -9,9 +9,10 @@ void cb_string_init(cb_string_t *cgbs) {
 
 int cb_string_realloc(cb_string_t *s, const unsigned int len) {
 	unsigned int oldlen = s->len;
-	s->len = len+1; // + NULL byte
+	s->len = len;
 
-	s->size = sizeof(char) * (s->len);
+	s->size = sizeof(char) * (s->len+1);
+	// + NULL byte
 
 	if(oldlen == 0)
 		s->mem = calloc(s->len, sizeof(char));

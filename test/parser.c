@@ -11,7 +11,8 @@
 #define EXIT_TESTFAIL 2
 
 int test_recordsCount() {
-	int count, fd;
+	long unsigned count;
+	int fd;
 	void *response;
 	struct stat sb;
 	char file[] = "./test/response/namedcmd.html";

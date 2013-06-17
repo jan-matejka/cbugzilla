@@ -16,7 +16,10 @@ int test_callback_useCase() {
 	cb_curl_WMemCallback(b, sizeof(char),  1, s);
 	cb_curl_WMemCallback(c, sizeof(char),  1, s);
 
-	if(s->len != 4)
+	if(s->len != 3)
+		return EXIT_TESTFAIL;
+
+	if(s->size != 4)
 		return EXIT_TESTFAIL;
 
 	if(strcmp(s->mem, "abc") != 0)
