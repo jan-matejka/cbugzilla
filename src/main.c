@@ -151,7 +151,8 @@ int main(int argc, char **argv)
 	if(strlen(response_log) > 0)
 		CB_BO(cbi->set_http_log_f(cbi, response_log));
 
-	CB_BO(cbi->set_url(cbi, "https://bugs.gentoo.org"));
+	//CB_BO(cbi->set_url(cbi, "https://bugs.gentoo.org"));
+	CB_BO(cbi->set_url(cbi, "https://bugzilla.novell.com"));
 	CB_BO(cbi->set_cookiejar_f(cbi, cookiejar));
 
 	int res;

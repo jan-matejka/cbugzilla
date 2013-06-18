@@ -38,6 +38,13 @@ int cbi_init_curl(cbi_t cbi) {
 	CB_CURLE(curl_easy_setopt(cb->curl, CURLOPT_SSL_VERIFYHOST, cb->verify_host));
 
 	CB_CURLE(curl_easy_setopt(cb->curl, CURLOPT_VERBOSE, cb->curl_verbose));
+	if(cb->curl_verbose) {
+		if(cb->http_log_f.mem != NULL) {
+			FILE *http_log = fopen(cb->http_log_f.mem, "a");
+			CB_CURLE(curl_easy_setopt(cb->curl, CURLOPT_STDERR, http_log));
+		}
+	}
+
 	CB_CURLE(curl_easy_setopt(cb->curl, CURLOPT_COOKIEJAR, cb->cookiejar_f.mem));
 	// NOTE: setting just COOKIESESSION to 1 won't send the cookies in the next request :/
 	//curl_easy_setopt(cb->curl, CURLOPT_COOKIESESSION, 1);

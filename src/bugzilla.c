@@ -83,7 +83,7 @@ int cb_bz_RecordsCount_get(cb_t cb, const char *namedcmd, unsigned long int *cou
 	if(0 > sprintf(headline, "rec: %93s\n", namedcmd))
 		return CB_E;
 
-	cb->log_response(cb, headline);
+	//cb->log_response(cb, headline);
 
 	TidyDoc tdoc;
 	CB_BO(cb_tidy_loadBuf(&tdoc,

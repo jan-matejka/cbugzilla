@@ -9,6 +9,7 @@
 #include <libcbugzilla/_cb.h>
 #include <libcbugzilla/bugzilla.h>
 
+#if 0
 int log_response(cb_t cb, char *name) {
 	if(cb->response.len <= 1)
 		return CB_SUCCESS; // nothing to do
@@ -38,6 +39,7 @@ int log_response(cb_t cb, char *name) {
 	sync();
 	return CB_SUCCESS;
 }
+#endif
 
 /* {{{ cbi_t functions */
 int cbi_free(cbi_t cbi) {
@@ -89,6 +91,7 @@ int cbi_set_url(cbi_t cbi, const char *c) {
 int cbi_set_http_log_f(cbi_t cbi, const char *c) {
 	CB_BO(cb_string_realloc(&cbi->cb->http_log_f, strlen(c)));
 	CB_BO(cb_string_dup(&cbi->cb->http_log_f, c));
+	cbi->cb->curl_verbose = 1;
 	return CB_SUCCESS;
 }
 int cbi_set_cookiejar_f(cbi_t cbi, const char *c) {
@@ -199,8 +202,8 @@ cbi_t cbi_new(void) {
 	cbi->get_total_time = cbi_get_total_time;
 
 
-	cb->http_log = NULL;
-	cb->log_response = log_response;
+	//cb->http_log = NULL;
+	//cb->log_response = log_response;
 	cb->curl_perform = cb_curl_perform;
 
 	return cbi;

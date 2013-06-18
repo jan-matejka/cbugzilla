@@ -19,9 +19,9 @@ struct cb_s {
 	cb_string_t response;
 	CURL *curl;
 	int curl_verbose;
-	FILE *http_log;
+//	FILE *http_log;
 	CURLcode res;
-	int (*log_response)(cb_t cb, char *name);
+//	int (*log_response)(cb_t cb, char *name);
 	int (*curl_perform)(cb_t cb);
 
 	double total_time;
