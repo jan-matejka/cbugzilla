@@ -1,9 +1,6 @@
 #ifndef CB_CB_C
 #define CB_CB_C
 
-#include <unistd.h>
-#include <time.h>
-
 #include <libcbugzilla/cb.h>
 #include <libcbugzilla/curl.h>
 #include <libcbugzilla/_cb.h>
@@ -106,12 +103,13 @@ int cbi_set_auth_pass(cbi_t cbi, const char *c) {
 	CB_BO(cb_string_dup(&cbi->cb->auth_pass, c));
 	return CB_SUCCESS;
 }
-int cbi_set_verify_peer(cbi_t cbi, const int i) {
-	cbi->cb->verify_peer = i;
+
+int cbi_set_verify_peer(cbi_t cbi, const bool i) {
+	cbi->cb->verify_peer = i ? 1 : 0;
 	return CB_SUCCESS;
 }
-int cbi_set_verify_host(cbi_t cbi, const int i) {
-	cbi->cb->verify_host = i;
+int cbi_set_verify_host(cbi_t cbi, const bool i) {
+	cbi->cb->verify_host = i ? 2 : 0;
 	return CB_SUCCESS;
 }
 

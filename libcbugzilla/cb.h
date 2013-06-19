@@ -3,6 +3,10 @@
 
 #include <curl/curl.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <time.h>
+#include <unistd.h>
+
 #include "config.h"
 
 #define CB_SUCCESS 0
@@ -46,8 +50,8 @@ struct cbi_s {
 	int (*set_auth_pass)(cbi_t cbi, const char *c);
 	/* password to log in bugzilla with */
 
-	int (*set_verify_peer)(cbi_t cbi, const int v); /* default true */
-	int (*set_verify_host)(cbi_t cbi, const int v); /* default true */
+	int (*set_verify_peer)(cbi_t cbi, const bool v); /* default true */
+	int (*set_verify_host)(cbi_t cbi, const bool v); /* default true */
 
 	/* }}} */
 
